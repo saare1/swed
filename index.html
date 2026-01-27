@@ -11,154 +11,41 @@
             --swed-yellow: #ffcc00;
             --bg-cream: #fbf8f1;
             --text-dark: #333;
-            --link-blue: #00768e;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: var(--bg-cream);
-            margin: 0;
-            padding: 0;
-            color: var(--text-dark);
-        }
-
-        .main-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        /* Ülemine teejuht (breadcrumb) */
-        .breadcrumb {
-            font-size: 12px;
-            margin-bottom: 20px;
-            color: #666;
-        }
-
-        h1 {
-            color: var(--swed-orange);
-            font-size: 32px;
-            margin-bottom: 30px;
-        }
-
-        /* Teavituse kast */
-        .info-box {
-            background-color: #e6f3f7;
-            border-radius: 8px;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        /* Kaardid/Sektsioonid */
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
+        body { font-family: Arial, sans-serif; background-color: var(--bg-cream); margin: 0; padding: 20px; color: var(--text-dark); }
+        .container { max-width: 1100px; margin: 0 auto; }
+        
+        h1 { color: var(--swed-orange); font-size: 32px; margin-bottom: 20px; }
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
 
         /* Tabid */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; border-radius: 20px; background: #eee; font-size: 14px; color: #555; cursor: pointer; }
+        .tab.active { background: var(--swed-yellow); color: black; font-weight: bold; }
 
-        .tab {
-            padding: 10px 20px;
-            border-radius: 25px;
-            background: #eee;
-            font-size: 14px;
-            cursor: pointer;
-            color: #444;
-            transition: 0.2s;
-        }
-
-        .tab.active {
-            background: var(--swed-yellow);
-            font-weight: bold;
-        }
-
-        /* Tabeli kujundus */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            text-align: left;
-            font-size: 13px;
-            color: #000;
-            border-bottom: 2px solid var(--swed-orange);
-            padding: 10px 5px;
-        }
-
-        td {
-            padding: 15px 5px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-
+        /* Tabelid */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; font-size: 13px; border-bottom: 2px solid var(--swed-orange); padding: 10px; }
+        td { padding: 12px 10px; border-bottom: 1px solid #eee; font-size: 14px; }
         .val-right { text-align: right; }
-        .pos-profit { color: #588e00; font-weight: bold; }
-        .link { color: var(--link-blue); text-decoration: none; cursor: pointer; }
-        .link:hover { text-decoration: underline; }
+        .positive { color: #588e00; font-weight: bold; }
+        .link { color: #00768e; text-decoration: none; font-weight: bold; cursor: pointer; }
 
-        /* Graafiku paigutus */
-        .flex-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 40px;
-        }
+        .flex-box { display: flex; justify-content: space-between; gap: 40px; }
+        .chart-container { width: 300px; text-align: center; }
 
-        .chart-side {
-            width: 350px;
-            text-align: center;
-        }
-
-        .total-row {
-            font-weight: bold;
-            background: #fafafa;
-        }
-
-        /* Jalus (footer) */
-        footer {
-            background: white;
-            padding: 50px 20px;
-            border-top: 5px solid var(--swed-orange);
-            margin-top: 50px;
-        }
-
-        .footer-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            font-size: 14px;
-        }
-
-        .footer-col h4 { margin-bottom: 15px; }
-        .footer-col p { color: #666; line-height: 1.6; margin: 5px 0; cursor: pointer; }
+        /* Lisamise vorm */
+        .admin-panel { background: #fffcf5; border: 1px dashed var(--swed-orange); padding: 20px; border-radius: 8px; margin-top: 40px; }
+        .admin-panel input { padding: 10px; margin: 5px; border: 1px solid #ccc; border-radius: 4px; width: 180px; }
+        .add-btn { background: var(--swed-orange); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .delete-btn { color: #cc0000; cursor: pointer; font-size: 12px; margin-left: 10px; }
     </style>
 </head>
 <body>
 
-<div class="main-wrapper">
-    <div class="breadcrumb">Avaleht > Kogumine, investeerimine > <strong>Minu portfell</strong></div>
-    
+<div class="container">
     <h1>Minu portfell</h1>
-
-    <div class="info-box">
-        <span>ℹ️</span>
-        <span>2025. aasta tulude deklareerimine algab 16. veebruaril. Rohkem infot leiad meie <span class="link">tuludeklaratsiooni lehelt</span>.</span>
-    </div>
 
     <div class="card">
         <div class="tabs">
@@ -166,12 +53,11 @@
             <div class="tab">Arvelduskontod</div>
             <div class="tab">Pension</div>
             <div class="tab">Hoiused</div>
-            <div class="tab">Kogumine elukindlustusega</div>
         </div>
 
-        <div class="flex-container">
+        <div class="flex-box">
             <div style="flex: 1;">
-                <h3 style="color: var(--swed-orange); margin-bottom: 20px;">Portfelli ülevaade</h3>
+                <h3 style="color: var(--swed-orange);">Portfelli ülevaade</h3>
                 <table>
                     <thead>
                         <tr>
@@ -180,36 +66,27 @@
                             <th class="val-right">Väärtus (EUR)</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="link">Raha</span></td>
-                            <td class="val-right">0.00</td>
-                            <td class="val-right">0.00</td>
-                        </tr>
-                        <tr>
-                            <td><span class="link">Fondid</span></td>
-                            <td class="val-right"><span class="pos-profit">4.48 EUR / 22.40%</span></td>
-                            <td class="val-right">24.48</td>
-                        </tr>
-                        <tr class="total-row">
+                    <tbody id="overviewBody">
+                        </tbody>
+                    <tfoot>
+                        <tr style="font-weight: bold; background: #fafafa;">
                             <td>Portfell kokku</td>
-                            <td class="val-right"><span class="pos-profit">4.48 EUR / 22.40%</span></td>
-                            <td class="val-right">24.48</td>
+                            <td class="val-right positive" id="totalProfit">0.00 EUR</td>
+                            <td class="val-right" id="totalValue">0.00</td>
                         </tr>
-                    </tbody>
+                    </tfoot>
                 </table>
             </div>
-
-            <div class="chart-side">
+            <div class="chart-container">
                 <canvas id="portfolioChart"></canvas>
-                <p style="margin-top: 15px; font-weight: bold;"><span style="color: var(--swed-orange)">●</span> Fondid 100,00%</p>
+                <div id="chartLegend" style="margin-top: 15px; font-size: 13px;"></div>
             </div>
         </div>
     </div>
 
     <div class="card">
-        <h3 style="color: var(--swed-orange);">Investeerimine: <span class="link">Minu investeering</span> ✏️</h3>
-        <table style="margin-top: 20px;">
+        <h3 style="color: var(--swed-orange);">Investeerimine: Minu investeering</h3>
+        <table>
             <thead>
                 <tr>
                     <th>Väärtpaber</th>
@@ -217,70 +94,130 @@
                     <th class="val-right">Hind</th>
                     <th class="val-right">Kasum</th>
                     <th class="val-right">Väärtus</th>
+                    <th></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td><span class="link">SWEDBANK ROBUR ACCESS EDGE GLOBAL C</span></td>
-                    <td class="val-right">1.4609</td>
-                    <td class="val-right">16.7561 EUR</td>
-                    <td class="val-right"><span class="pos-profit">4.48 EUR</span></td>
-                    <td class="val-right">24.48 EUR</td>
-                </tr>
-            </tbody>
+            <tbody id="detailBody">
+                </tbody>
         </table>
+    </div>
+
+    <div class="admin-panel">
+        <h3>Lisa uus aktsia või fond</h3>
+        <input type="text" id="inName" placeholder="Väärtpaberi nimi">
+        <input type="number" id="inQty" placeholder="Kogus (saldo)">
+        <input type="number" id="inPrice" placeholder="Hind (EUR)">
+        <input type="number" id="inProfit" placeholder="Kasum (EUR)">
+        <button class="add-btn" onclick="addItem()">Lisa portfelli</button>
+        <p style="font-size: 12px; color: #666; margin-top: 10px;">* Andmed salvestatakse Sinu brauseri mällu.</p>
     </div>
 </div>
 
-<footer>
-    <div class="footer-grid">
-        <div class="footer-col">
-            <h4>Kontaktid</h4>
-            <p>Kontaktid, esindused ja sularahaautomaadid</p>
-            <p>Aja broneerimine</p>
-        </div>
-        <div class="footer-col">
-            <h4>Kasulikud lingid</h4>
-            <p>Turvalised rahaasjad</p>
-            <p>Jätkusuutlikkus</p>
-            <p>Hinnad ja kursid</p>
-        </div>
-        <div class="footer-col">
-            <h4>Juriidiline info</h4>
-            <p>Pangatingimused</p>
-            <p>Kliendiandmete töötlemine</p>
-            <p>Haldan küpsiseid</p>
-        </div>
-        <div class="footer-col">
-            <h4>Kliendiprogrammid</h4>
-            <p>Privaatpanganduse kliendid</p>
-            <p>Kuldkliendid</p>
-            <p>Noorele ja tudengile</p>
-        </div>
-    </div>
-</footer>
-
 <script>
-    // Sektordiagrammi joonistamine
-    const ctx = document.getElementById('portfolioChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Fondid'],
-            datasets: [{
-                data: [100],
-                backgroundColor: ['#ee7023'],
-                borderWidth: 0,
-                hoverOffset: 4
-            }]
-        },
-        options: {
-            cutout: '70%',
-            plugins: {
-                legend: { display: false }
-            }
+    // Algandmed laetakse mälust või kasutatakse vaikeväärtusi
+    let assets = JSON.parse(localStorage.getItem('swed_assets')) || [
+        { name: 'SWEDBANK ROBUR ACCESS EDGE GLOBAL C', qty: 1.4609, price: 16.7561, profit: 4.48 }
+    ];
+
+    let myChart = null;
+
+    function render() {
+        const overviewBody = document.getElementById('overviewBody');
+        const detailBody = document.getElementById('detailBody');
+        overviewBody.innerHTML = '';
+        detailBody.innerHTML = '';
+
+        let totalV = 0;
+        let totalP = 0;
+
+        assets.forEach((item, index) => {
+            const value = item.qty * item.price;
+            totalV += value;
+            totalP += item.profit;
+
+            // Detailne tabel
+            detailBody.innerHTML += `
+                <tr>
+                    <td><span class="link">${item.name}</span></td>
+                    <td class="val-right">${item.qty.toFixed(4)}</td>
+                    <td class="val-right">${item.price.toFixed(4)} EUR</td>
+                    <td class="val-right positive">${item.profit.toFixed(2)} EUR</td>
+                    <td class="val-right">${value.toFixed(2)} EUR</td>
+                    <td><span class="delete-btn" onclick="deleteItem(${index})">❌</span></td>
+                </tr>`;
+            
+            // Ülevaate tabel
+            overviewBody.innerHTML += `
+                <tr>
+                    <td><span class="link">${item.name}</span></td>
+                    <td class="val-right positive">${item.profit.toFixed(2)} EUR</td>
+                    <td class="val-right">${value.toFixed(2)}</td>
+                </tr>`;
+        });
+
+        document.getElementById('totalValue').innerText = totalV.toFixed(2);
+        document.getElementById('totalProfit').innerText = totalP.toFixed(2) + " EUR";
+
+        updateChart(assets);
+        localStorage.setItem('swed_assets', JSON.stringify(assets));
+    }
+
+    function addItem() {
+        const name = document.getElementById('inName').value;
+        const qty = parseFloat(document.getElementById('inQty').value);
+        const price = parseFloat(document.getElementById('inPrice').value);
+        const profit = parseFloat(document.getElementById('inProfit').value) || 0;
+
+        if (name && qty && price) {
+            assets.push({ name, qty, price, profit });
+            render();
+            // Tühjenda väljad
+            document.getElementById('inName').value = '';
+            document.getElementById('inQty').value = '';
+            document.getElementById('inPrice').value = '';
+            document.getElementById('inProfit').value = '';
+        } else {
+            alert("Täida nimi, kogus ja hind!");
         }
-    });
+    }
+
+    function deleteItem(index) {
+        assets.splice(index, 1);
+        render();
+    }
+
+    function updateChart(data) {
+        const ctx = document.getElementById('portfolioChart').getContext('2d');
+        const labels = data.map(a => a.name);
+        const values = data.map(a => a.qty * a.price);
+        
+        if (myChart) myChart.destroy();
+
+        myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: ['#ee7023', '#ffcc00', '#00768e', '#588e00', '#999'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                cutout: '70%',
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Uuenda graafiku selgitust
+        const legend = document.getElementById('chartLegend');
+        legend.innerHTML = data.map((a, i) => {
+            const pct = ((a.qty * a.price) / values.reduce((a, b) => a + b, 0) * 100).toFixed(2);
+            return `<div><span style="color: ${myChart.data.datasets[0].backgroundColor[i]}">●</span> ${a.name} ${pct}%</div>`;
+        }).join('');
+    }
+
+    render();
 </script>
 
 </body>
