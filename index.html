@@ -19,27 +19,24 @@
         h1 { color: var(--swed-orange); font-size: 32px; margin-bottom: 20px; }
         .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
 
-        /* Tabid */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab { padding: 10px 20px; border-radius: 20px; background: #eee; font-size: 14px; color: #555; cursor: pointer; }
+        .tab { padding: 10px 20px; border-radius: 20px; background: #eee; font-size: 14px; color: #555; }
         .tab.active { background: var(--swed-yellow); color: black; font-weight: bold; }
 
-        /* Tabelid */
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; font-size: 13px; border-bottom: 2px solid var(--swed-orange); padding: 10px; }
         td { padding: 12px 10px; border-bottom: 1px solid #eee; font-size: 14px; }
         .val-right { text-align: right; }
         .positive { color: #588e00; font-weight: bold; }
-        .link { color: #00768e; text-decoration: none; font-weight: bold; cursor: pointer; }
+        .link { color: #00768e; text-decoration: none; font-weight: bold; }
 
         .flex-box { display: flex; justify-content: space-between; gap: 40px; }
         .chart-container { width: 300px; text-align: center; }
 
-        /* Lisamise vorm */
         .admin-panel { background: #fffcf5; border: 1px dashed var(--swed-orange); padding: 20px; border-radius: 8px; margin-top: 40px; }
-        .admin-panel input { padding: 10px; margin: 5px; border: 1px solid #ccc; border-radius: 4px; width: 180px; }
+        .admin-panel input, .admin-panel select { padding: 10px; margin: 5px; border: 1px solid #ccc; border-radius: 4px; }
         .add-btn { background: var(--swed-orange); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .delete-btn { color: #cc0000; cursor: pointer; font-size: 12px; margin-left: 10px; }
+        .delete-btn { color: #cc0000; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -90,6 +87,7 @@
             <thead>
                 <tr>
                     <th>Väärtpaber</th>
+                    <th>Tüüp</th>
                     <th class="val-right">Saldo</th>
                     <th class="val-right">Hind</th>
                     <th class="val-right">Kasum</th>
@@ -97,26 +95,27 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody id="detailBody">
-                </tbody>
+            <tbody id="detailBody"></tbody>
         </table>
     </div>
 
     <div class="admin-panel">
-        <h3>Lisa uus aktsia või fond</h3>
-        <input type="text" id="inName" placeholder="Väärtpaberi nimi">
-        <input type="number" id="inQty" placeholder="Kogus (saldo)">
-        <input type="number" id="inPrice" placeholder="Hind (EUR)">
-        <input type="number" id="inProfit" placeholder="Kasum (EUR)">
-        <button class="add-btn" onclick="addItem()">Lisa portfelli</button>
-        <p style="font-size: 12px; color: #666; margin-top: 10px;">* Andmed salvestatakse Sinu brauseri mällu.</p>
+        <h3>Lisa uus positsioon</h3>
+        <input type="text" id="inName" placeholder="Nimi (nt: Apple)">
+        <select id="inType">
+            <option value="Fondid">Fond</option>
+            <option value="Aktsiad">Aktsia</option>
+        </select>
+        <input type="number" id="inQty" placeholder="Kogus">
+        <input type="number" id="inPrice" placeholder="Hind">
+        <input type="number" id="inProfit" placeholder="Kasum">
+        <button class="add-btn" onclick="addItem()">Lisa rida</button>
     </div>
 </div>
 
 <script>
-    // Algandmed laetakse mälust või kasutatakse vaikeväärtusi
-    let assets = JSON.parse(localStorage.getItem('swed_assets')) || [
-        { name: 'SWEDBANK ROBUR ACCESS EDGE GLOBAL C', qty: 1.4609, price: 16.7561, profit: 4.48 }
+    let assets = JSON.parse(localStorage.getItem('swed_assets_v2')) || [
+        { name: 'SWEDBANK ROBUR ACCESS EDGE GLOBAL C', type: 'Fondid', qty: 1.4609, price: 16.7561, profit: 4.48 }
     ];
 
     let myChart = null;
@@ -127,98 +126,83 @@
         overviewBody.innerHTML = '';
         detailBody.innerHTML = '';
 
-        let totalV = 0;
-        let totalP = 0;
+        let totals = { Fondid: { v: 0, p: 0 }, Aktsiad: { v: 0, p: 0 } };
+        let grandTotalV = 0;
+        let grandTotalP = 0;
 
         assets.forEach((item, index) => {
-            const value = item.qty * item.price;
-            totalV += value;
-            totalP += item.profit;
+            const val = item.qty * item.price;
+            totals[item.type].v += val;
+            totals[item.type].p += item.profit;
+            grandTotalV += val;
+            grandTotalP += item.profit;
 
-            // Detailne tabel
             detailBody.innerHTML += `
                 <tr>
                     <td><span class="link">${item.name}</span></td>
+                    <td>${item.type}</td>
                     <td class="val-right">${item.qty.toFixed(4)}</td>
-                    <td class="val-right">${item.price.toFixed(4)} EUR</td>
-                    <td class="val-right positive">${item.profit.toFixed(2)} EUR</td>
-                    <td class="val-right">${value.toFixed(2)} EUR</td>
-                    <td><span class="delete-btn" onclick="deleteItem(${index})">❌</span></td>
-                </tr>`;
-            
-            // Ülevaate tabel
-            overviewBody.innerHTML += `
-                <tr>
-                    <td><span class="link">${item.name}</span></td>
-                    <td class="val-right positive">${item.profit.toFixed(2)} EUR</td>
-                    <td class="val-right">${value.toFixed(2)}</td>
+                    <td class="val-right">${item.price.toFixed(2)}</td>
+                    <td class="val-right positive">${item.profit.toFixed(2)}</td>
+                    <td class="val-right">${val.toFixed(2)}</td>
+                    <td><span class="delete-btn" onclick="deleteItem(${index})">Kustuta</span></td>
                 </tr>`;
         });
 
-        document.getElementById('totalValue').innerText = totalV.toFixed(2);
-        document.getElementById('totalProfit').innerText = totalP.toFixed(2) + " EUR";
+        // Ülemine tabel - ainult Fondid ja Aktsiad read
+        ['Fondid', 'Aktsiad'].forEach(type => {
+            if (totals[type].v > 0) {
+                const perc = ((totals[type].p / (totals[type].v - totals[type].p)) * 100).toFixed(2);
+                overviewBody.innerHTML += `
+                    <tr>
+                        <td><span class="link">${type}</span></td>
+                        <td class="val-right positive">${totals[type].p.toFixed(2)} EUR / ${perc}%</td>
+                        <td class="val-right">${totals[type].v.toFixed(2)}</td>
+                    </tr>`;
+            }
+        });
 
-        updateChart(assets);
-        localStorage.setItem('swed_assets', JSON.stringify(assets));
+        document.getElementById('totalValue').innerText = grandTotalV.toFixed(2);
+        document.getElementById('totalProfit').innerText = grandTotalP.toFixed(2) + " EUR";
+
+        updateChart(totals);
+        localStorage.setItem('swed_assets_v2', JSON.stringify(assets));
     }
 
     function addItem() {
         const name = document.getElementById('inName').value;
+        const type = document.getElementById('inType').value;
         const qty = parseFloat(document.getElementById('inQty').value);
         const price = parseFloat(document.getElementById('inPrice').value);
         const profit = parseFloat(document.getElementById('inProfit').value) || 0;
 
         if (name && qty && price) {
-            assets.push({ name, qty, price, profit });
+            assets.push({ name, type, qty, price, profit });
             render();
-            // Tühjenda väljad
-            document.getElementById('inName').value = '';
-            document.getElementById('inQty').value = '';
-            document.getElementById('inPrice').value = '';
-            document.getElementById('inProfit').value = '';
-        } else {
-            alert("Täida nimi, kogus ja hind!");
         }
     }
 
-    function deleteItem(index) {
-        assets.splice(index, 1);
-        render();
-    }
+    function deleteItem(i) { assets.splice(i, 1); render(); }
 
-    function updateChart(data) {
+    function updateChart(totals) {
         const ctx = document.getElementById('portfolioChart').getContext('2d');
-        const labels = data.map(a => a.name);
-        const values = data.map(a => a.qty * a.price);
-        
-        if (myChart) myChart.destroy();
+        const dataValues = [totals.Fondid.v, totals.Aktsiad.v].filter(v => v > 0);
+        const dataLabels = ['Fondid', 'Aktsiad'].filter(t => totals[t].v > 0);
 
+        if (myChart) myChart.destroy();
         myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: labels,
-                datasets: [{
-                    data: values,
-                    backgroundColor: ['#ee7023', '#ffcc00', '#00768e', '#588e00', '#999'],
-                    borderWidth: 0
-                }]
+                labels: dataLabels,
+                datasets: [{ data: dataValues, backgroundColor: ['#ee7023', '#00768e'], borderWidth: 0 }]
             },
-            options: {
-                cutout: '70%',
-                plugins: { legend: { display: false } }
-            }
+            options: { cutout: '70%', plugins: { legend: { display: false } } }
         });
-
-        // Uuenda graafiku selgitust
-        const legend = document.getElementById('chartLegend');
-        legend.innerHTML = data.map((a, i) => {
-            const pct = ((a.qty * a.price) / values.reduce((a, b) => a + b, 0) * 100).toFixed(2);
-            return `<div><span style="color: ${myChart.data.datasets[0].backgroundColor[i]}">●</span> ${a.name} ${pct}%</div>`;
-        }).join('');
+        
+        document.getElementById('chartLegend').innerHTML = dataLabels.map((l, i) => `<div>● ${l} 100%</div>`).join('');
     }
 
     render();
 </script>
-
 </body>
 </html>
