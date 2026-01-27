@@ -12,22 +12,22 @@
             --bg-cream: #fbf8f1;
             --text-dark: #333;
             --link-blue: #00768e;
-            --row-bg: #fdfcf9;
         }
 
         body { font-family: Arial, sans-serif; background-color: var(--bg-cream); margin: 0; padding: 20px; color: var(--text-dark); }
-        .container { max-width: 1200px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; position: relative; }
         
         .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
         h1 { color: var(--swed-orange); font-size: 32px; margin-bottom: 20px; }
         h3 { color: var(--swed-orange); margin-top: 0; }
 
-        /* Tabid */
+        /* Seadete link paremal ülal */
+        .settings-link { position: absolute; right: 0; top: 65px; color: var(--link-blue); font-size: 14px; text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab { padding: 10px 20px; border-radius: 20px; background: #eee; font-size: 14px; color: #555; }
         .tab.active { background: var(--swed-yellow); color: black; font-weight: bold; }
 
-        /* Tabelid */
         table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
         th { text-align: left; font-size: 13px; border-bottom: 2px solid var(--swed-orange); padding: 10px; color: #000; }
         td { padding: 12px 10px; border-bottom: 1px solid #eee; font-size: 14px; }
@@ -43,17 +43,22 @@
         .flex-box { display: flex; justify-content: space-between; gap: 40px; }
         .chart-container { width: 300px; text-align: center; }
 
-        /* Administraatori paneel */
-        .admin-panel { background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-top: 40px; }
+        /* PEIDETUD HALDUS PANEEL */
+        #adminPanel { display: none; background: #fff; border: 2px dashed var(--swed-orange); padding: 20px; border-radius: 8px; margin-top: 40px; }
         .admin-panel input, .admin-panel select { padding: 8px; margin: 5px; border: 1px solid #ccc; border-radius: 4px; }
         .add-btn { background: var(--swed-orange); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .delete-btn { color: #999; cursor: pointer; font-size: 12px; font-weight: normal; margin-left: 8px; }
-        .delete-btn:hover { color: red; }
+        
+        /* Peidetud kustutamise nupud */
+        .delete-btn { display: none; color: #ccc; cursor: pointer; font-size: 10px; margin-left: 10px; }
+        .admin-active .delete-btn { display: inline; }
+        .admin-active #adminPanel { display: block; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="mainContainer">
+    <div class="settings-link" onclick="toggleAdmin()">▶ Seaded</div>
+    
     <h1>Minu portfell</h1>
 
     <div class="card">
@@ -62,6 +67,7 @@
             <div class="tab">Arvelduskontod</div>
             <div class="tab">Pension</div>
             <div class="tab">Hoiused</div>
+            <div class="tab">Kogumine elukindlustusega</div>
         </div>
 
         <div class="flex-box">
@@ -93,7 +99,7 @@
     </div>
 
     <div class="card">
-        <h3>Investeerimine: <span style="text-decoration: underline; cursor: pointer;">Minu investeering</span> ✏️</h3>
+        <h3>Investeerimine: <span class="link" style="color: var(--swed-orange); border-bottom: 1px solid var(--swed-orange);">Minu investeering</span> ✏️</h3>
         <table id="fullDetailTable">
             <thead>
                 <tr>
@@ -105,33 +111,41 @@
                     <th class="val-right">Väärtus</th>
                 </tr>
             </thead>
-            <tbody id="detailBody">
-                </tbody>
+            <tbody id="detailBody"></tbody>
         </table>
     </div>
 
-    <div class="admin-panel">
-        <h4 style="margin-top:0;">Halda portfelli</h4>
+    <div id="adminPanel" class="admin-panel">
+        <h4 style="margin-top:0;">Halduspaneel (Peidetud vaade)</h4>
         <input type="text" id="inName" placeholder="Nimi (nt: APPLE INC)">
         <select id="inType">
             <option value="Fondid">Fondid</option>
             <option value="Aktsiad">Aktsiad</option>
         </select>
-        <input type="number" id="inQty" step="any" placeholder="Saldo (kogus)">
+        <input type="number" id="inQty" step="any" placeholder="Saldo">
         <input type="number" id="inPrice" step="any" placeholder="Hind">
-        <input type="number" id="inDayChange" step="any" placeholder="Päevane muutus (EUR)">
-        <input type="number" id="inProfit" step="any" placeholder="Kasum (EUR)">
+        <input type="number" id="inDayChange" step="any" placeholder="Päevane muutus (€)">
+        <input type="number" id="inProfit" step="any" placeholder="Kasum (€)">
         <button class="add-btn" onclick="addItem()">Lisa portfelli</button>
+        <button onclick="toggleAdmin()" style="background:#666; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer; margin-left:10px;">Sulge haldus</button>
     </div>
 </div>
 
 <script>
-    // Algandmed
     let assets = JSON.parse(localStorage.getItem('swed_v3')) || [
         { name: 'SWEDBANK ROBUR ACCESS EDGE GLOBAL C', type: 'Fondid', qty: 1.4609, price: 16.7561, dayChange: -0.13, profit: 4.48 }
     ];
 
     let myChart = null;
+
+    function toggleAdmin() {
+        document.getElementById('mainContainer').classList.toggle('admin-active');
+    }
+
+    // Salajane klahv: Vajuta 'H', et avada haldus
+    document.addEventListener('keydown', function(e) {
+        if (e.key.toLowerCase() === 'h') toggleAdmin();
+    });
 
     function render() {
         const detailBody = document.getElementById('detailBody');
@@ -147,13 +161,8 @@
 
         ['Fondid', 'Aktsiad'].forEach(type => {
             if (groups[type].length === 0) return;
-
-            // Lisa kategooria päis
             detailBody.innerHTML += `<tr><td colspan="6" class="category-header">${type}</td></tr>`;
-
-            let groupV = 0;
-            let groupP = 0;
-            let groupD = 0;
+            let groupV = 0, groupP = 0, groupD = 0;
 
             groups[type].forEach(item => {
                 const currentVal = item.qty * item.price;
@@ -161,49 +170,25 @@
                 const profitPct = costBasis > 0 ? (item.profit / costBasis * 100).toFixed(2) : "0.00";
                 const dayChangePct = currentVal > 0 ? (item.dayChange / currentVal * 100).toFixed(2) : "0.00";
                 
-                groupV += currentVal;
-                groupP += item.profit;
-                groupD += item.dayChange;
+                groupV += currentVal; groupP += item.profit; groupD += item.dayChange;
 
                 detailBody.innerHTML += `
                     <tr>
-                        <td><span class="link">${item.name}</span> <span class="delete-btn" onclick="deleteItem(${item.id})">Kustuta</span></td>
+                        <td><span class="link" style="color:#00768e">${item.name}</span> <span class="delete-btn" onclick="deleteItem(${item.id})"> (Kustuta)</span></td>
                         <td class="val-right">${item.qty.toFixed(4)}</td>
                         <td class="val-right">${item.price.toFixed(4)} EUR</td>
-                        <td class="val-right ${item.dayChange < 0 ? 'negative' : 'positive'}">
-                            ${item.dayChange.toFixed(2)} EUR / ${dayChangePct}%
-                        </td>
+                        <td class="val-right ${item.dayChange < 0 ? 'negative' : 'positive'}">${item.dayChange.toFixed(2)} EUR / ${dayChangePct}%</td>
                         <td class="val-right positive">${item.profit.toFixed(2)} EUR / ${profitPct}%</td>
                         <td class="val-right">${currentVal.toFixed(2)} EUR</td>
                     </tr>`;
             });
 
-            // Kategooria kokkuvõtte rida
             const groupProfitPct = (groupV - groupP) > 0 ? (groupP / (groupV - groupP) * 100).toFixed(2) : "0.00";
-            const groupDayPct = groupV > 0 ? (groupD / groupV * 100).toFixed(2) : "0.00";
-
-            detailBody.innerHTML += `
-                <tr class="subtotal-row">
-                    <td>Investeeringud kokku</td>
-                    <td colspan="2"></td>
-                    <td class="val-right ${groupD < 0 ? 'negative' : 'positive'}">${groupD.toFixed(2)} EUR / ${groupDayPct}%</td>
-                    <td class="val-right positive">${groupP.toFixed(2)} EUR / ${groupProfitPct}%</td>
-                    <td class="val-right">${groupV.toFixed(2)} EUR</td>
-                </tr>`;
-
-            // Lisa ka ülemisse "Portfelli ülevaade" tabelisse
-            overviewBody.innerHTML += `
-                <tr>
-                    <td><span class="link">${type}</span></td>
-                    <td class="val-right positive">${groupP.toFixed(2)} EUR / ${groupProfitPct}%</td>
-                    <td class="val-right">${groupV.toFixed(2)}</td>
-                </tr>`;
-
-            grandTotalV += groupV;
-            grandTotalP += groupP;
+            detailBody.innerHTML += `<tr class="subtotal-row"><td colspan="4">Investeeringud kokku</td><td class="val-right positive">${groupP.toFixed(2)} EUR / ${groupProfitPct}%</td><td class="val-right">${groupV.toFixed(2)} EUR</td></tr>`;
+            overviewBody.innerHTML += `<tr><td><span class="link" style="color:#00768e">${type}</span></td><td class="val-right positive">${groupP.toFixed(2)} EUR / ${groupProfitPct}%</td><td class="val-right">${groupV.toFixed(2)}</td></tr>`;
+            grandTotalV += groupV; grandTotalP += groupP;
         });
 
-        // Portfell kokku summad
         const grandProfitPct = (grandTotalV - grandTotalP) > 0 ? (grandTotalP / (grandTotalV - grandTotalP) * 100).toFixed(2) : "0.00";
         document.getElementById('topTotalValue').innerText = grandTotalV.toFixed(2);
         document.getElementById('topTotalProfit').innerText = `${grandTotalP.toFixed(2)} EUR / ${grandProfitPct}%`;
@@ -219,38 +204,18 @@
         const price = parseFloat(document.getElementById('inPrice').value);
         const dayChange = parseFloat(document.getElementById('inDayChange').value) || 0;
         const profit = parseFloat(document.getElementById('inProfit').value) || 0;
-
-        if (name && qty && price) {
-            assets.push({ name, type, qty, price, dayChange, profit });
-            render();
-        }
+        if (name && qty && price) { assets.push({ name, type, qty, price, dayChange, profit }); render(); }
     }
 
     function deleteItem(index) { assets.splice(index, 1); render(); }
 
     function updateChart(total, groups) {
         const ctx = document.getElementById('portfolioChart').getContext('2d');
-        const fondValue = groups.Fondid.reduce((sum, i) => sum + (i.qty * i.price), 0);
-        const aktsiaValue = groups.Aktsiad.reduce((sum, i) => sum + (i.qty * i.price), 0);
-
+        const fV = groups.Fondid.reduce((s, i) => s + (i.qty * i.price), 0);
+        const aV = groups.Aktsiad.reduce((s, i) => s + (i.qty * i.price), 0);
         if (myChart) myChart.destroy();
-        myChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Fondid', 'Aktsiad'],
-                datasets: [{
-                    data: [fondValue, aktsiaValue],
-                    backgroundColor: ['#ee7023', '#00768e'],
-                    borderWidth: 0
-                }]
-            },
-            options: { cutout: '75%', plugins: { legend: { display: false } } }
-        });
-
-        let legendHTML = '';
-        if (fondValue > 0) legendHTML += `<div><span style="color:#ee7023">●</span> Fondid ${(fondValue/total*100).toFixed(2)}%</div>`;
-        if (aktsiaValue > 0) legendHTML += `<div><span style="color:#00768e">●</span> Aktsiad ${(aktsiaValue/total*100).toFixed(2)}%</div>`;
-        document.getElementById('chartLegend').innerHTML = legendHTML;
+        myChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Fondid', 'Aktsiad'], datasets: [{ data: [fV, aV], backgroundColor: ['#ee7023', '#00768e'], borderWidth: 0 }] }, options: { cutout: '75%', plugins: { legend: { display: false } } } });
+        document.getElementById('chartLegend').innerHTML = `<div><span style="color:#ee7023">●</span> Fondid 100,00%</div>`;
     }
 
     render();
