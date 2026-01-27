@@ -3,177 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfelli ülevaade - Swedbank</title>
+    <title>Minu portfell - Swedbank</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --swed-orange: #ee7023;
             --swed-yellow: #ffcc00;
-            --text-gray: #555;
-            --bg-gray: #f9f9f9;
+            --bg-cream: #fbf8f1;
+            --text-dark: #333;
+            --link-blue: #00768e;
         }
 
-        body { font-family: Arial, sans-serif; background-color: white; margin: 40px; color: #333; }
-        
-        /* Navigation Tabs */
-        .nav-tabs { display: flex; gap: 10px; margin-bottom: 30px; }
-        .tab { padding: 10px 20px; border-radius: 20px; background: #eee; font-size: 14px; cursor: pointer; color: #666; }
-        .tab.active { background: var(--swed-yellow); color: black; font-weight: bold; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-cream);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+        }
 
-        h2 { color: var(--swed-orange); font-size: 22px; margin-bottom: 20px; }
+        .main-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
 
-        .main-content { display: flex; justify-content: space-between; align-items: flex-start; gap: 50px; }
+        /* Ülemine teejuht (breadcrumb) */
+        .breadcrumb {
+            font-size: 12px;
+            margin-bottom: 20px;
+            color: #666;
+        }
 
-        /* Table Styling */
-        .table-container { flex: 1; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; font-size: 13px; border-bottom: 2px solid var(--swed-orange); padding: 10px 5px; color: black; }
-        td { padding: 12px 5px; border-bottom: 1px solid #eee; font-size: 14px; }
-        .row-total { font-weight: bold; border-top: 1px solid #ccc; }
-        .positive { color: #588e00; font-weight: bold; }
-        .link { color: #00768e; text-decoration: none; border-bottom: 1px solid transparent; }
-        .link:hover { border-bottom: 1px solid #00768e; }
+        h1 {
+            color: var(--swed-orange);
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
 
-        /* Chart Area */
-        .chart-container { width: 300px; text-align: center; }
-        #chartLabel { margin-top: 15px; font-size: 14px; font-weight: bold; }
+        /* Teavituse kast */
+        .info-box {
+            background-color: #e6f3f7;
+            border-radius: 8px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
 
-        /* Admin Panel for adding fake stocks */
-        .admin-panel { margin-top: 50px; padding: 20px; border: 1px dashed #ccc; background: var(--bg-gray); border-radius: 8px; }
-        .admin-panel input { padding: 8px; margin-right: 10px; border: 1px solid #ccc; }
-        .admin-btn { background: var(--swed-orange); color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 5px; }
+        /* Kaardid/Sektsioonid */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        /* Tabid */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: #eee;
+            font-size: 14px;
+            cursor: pointer;
+            color: #444;
+            transition: 0.2s;
+        }
+
+        .tab.active {
+            background: var(--swed-yellow);
+            font-weight: bold;
+        }
+
+        /* Tabeli kujundus */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            font-size: 13px;
+            color: #000;
+            border-bottom: 2px solid var(--swed-orange);
+            padding: 10px 5px;
+        }
+
+        td {
+            padding: 15px 5px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .val-right { text-align: right; }
+        .pos-profit { color: #588e00; font-weight: bold; }
+        .link { color: var(--link-blue); text-decoration: none; cursor: pointer; }
+        .link:hover { text-decoration: underline; }
+
+        /* Graafiku paigutus */
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 40px;
+        }
+
+        .chart-side {
+            width: 350px;
+            text-align: center;
+        }
+
+        .total-row {
+            font-weight: bold;
+            background: #fafafa;
+        }
+
+        /* Jalus (footer) */
+        footer {
+            background: white;
+            padding: 50px 20px;
+            border-top: 5px solid var(--swed-orange);
+            margin-top: 50px;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .footer-col h4 { margin-bottom: 15px; }
+        .footer-col p { color: #666; line-height: 1.6; margin: 5px 0; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="nav-tabs">
-        <div class="tab active">Investeeringud</div>
-        <div class="tab">Arvelduskontod</div>
-        <div class="tab">Pension</div>
-        <div class="tab">Hoiused</div>
-        <div class="tab">Kogumine elukindlustusega</div>
+<div class="main-wrapper">
+    <div class="breadcrumb">Avaleht > Kogumine, investeerimine > <strong>Minu portfell</strong></div>
+    
+    <h1>Minu portfell</h1>
+
+    <div class="info-box">
+        <span>ℹ️</span>
+        <span>2025. aasta tulude deklareerimine algab 16. veebruaril. Rohkem infot leiad meie <span class="link">tuludeklaratsiooni lehelt</span>.</span>
     </div>
 
-    <h2>Portfelli ülevaade</h2>
+    <div class="card">
+        <div class="tabs">
+            <div class="tab active">Investeeringud</div>
+            <div class="tab">Arvelduskontod</div>
+            <div class="tab">Pension</div>
+            <div class="tab">Hoiused</div>
+            <div class="tab">Kogumine elukindlustusega</div>
+        </div>
 
-    <div class="main-content">
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 40%;">Vara liik</th>
-                        <th style="width: 30%; text-align: right;">Kasum</th>
-                        <th style="width: 30%; text-align: right;">Väärtus (EUR)</th>
-                    </tr>
-                </thead>
-                <tbody id="portfolioBody">
+        <div class="flex-container">
+            <div style="flex: 1;">
+                <h3 style="color: var(--swed-orange); margin-bottom: 20px;">Portfelli ülevaade</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vara liik</th>
+                            <th class="val-right">Kasum</th>
+                            <th class="val-right">Väärtus (EUR)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="link">Raha</span></td>
+                            <td class="val-right">0.00</td>
+                            <td class="val-right">0.00</td>
+                        </tr>
+                        <tr>
+                            <td><span class="link">Fondid</span></td>
+                            <td class="val-right"><span class="pos-profit">4.48 EUR / 22.40%</span></td>
+                            <td class="val-right">24.48</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>Portfell kokku</td>
+                            <td class="val-right"><span class="pos-profit">4.48 EUR / 22.40%</span></td>
+                            <td class="val-right">24.48</td>
+                        </tr>
                     </tbody>
-                <tfoot>
-                    <tr class="row-total">
-                        <td>Portfell kokku</td>
-                        <td id="totalProfit" class="positive" style="text-align: right;">0.00 EUR / 0.00%</td>
-                        <td id="totalValue" style="text-align: right;">0.00</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+                </table>
+            </div>
 
-        <div class="chart-container">
-            <canvas id="portfolioChart"></canvas>
-            <div id="chartLabel"></div>
+            <div class="chart-side">
+                <canvas id="portfolioChart"></canvas>
+                <p style="margin-top: 15px; font-weight: bold;"><span style="color: var(--swed-orange)">●</span> Fondid 100,00%</p>
+            </div>
         </div>
     </div>
 
-    <div class="admin-panel">
-        <h3>Halda oma "aktsiaid"</h3>
-        <input type="text" id="assetName" placeholder="Vara nimi (nt: Fondid)">
-        <input type="number" id="assetValue" placeholder="Väärtus (EUR)">
-        <input type="number" id="assetProfit" placeholder="Kasum (EUR)">
-        <button class="admin-btn" onclick="addAsset()">Lisa / Uuenda</button>
-        <button style="background: #999;" class="admin-btn" onclick="clearData()">Tühjenda</button>
+    <div class="card">
+        <h3 style="color: var(--swed-orange);">Investeerimine: <span class="link">Minu investeering</span> ✏️</h3>
+        <table style="margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th>Väärtpaber</th>
+                    <th class="val-right">Saldo</th>
+                    <th class="val-right">Hind</th>
+                    <th class="val-right">Kasum</th>
+                    <th class="val-right">Väärtus</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="link">SWEDBANK ROBUR ACCESS EDGE GLOBAL C</span></td>
+                    <td class="val-right">1.4609</td>
+                    <td class="val-right">16.7561 EUR</td>
+                    <td class="val-right"><span class="pos-profit">4.48 EUR</span></td>
+                    <td class="val-right">24.48 EUR</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+</div>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h4>Kontaktid</h4>
+            <p>Kontaktid, esindused ja sularahaautomaadid</p>
+            <p>Aja broneerimine</p>
+        </div>
+        <div class="footer-col">
+            <h4>Kasulikud lingid</h4>
+            <p>Turvalised rahaasjad</p>
+            <p>Jätkusuutlikkus</p>
+            <p>Hinnad ja kursid</p>
+        </div>
+        <div class="footer-col">
+            <h4>Juriidiline info</h4>
+            <p>Pangatingimused</p>
+            <p>Kliendiandmete töötlemine</p>
+            <p>Haldan küpsiseid</p>
+        </div>
+        <div class="footer-col">
+            <h4>Kliendiprogrammid</h4>
+            <p>Privaatpanganduse kliendid</p>
+            <p>Kuldkliendid</p>
+            <p>Noorele ja tudengile</p>
+        </div>
+    </div>
+</footer>
 
 <script>
-    let myAssets = JSON.parse(localStorage.getItem('swedMockData')) || [
-        { name: 'Raha', value: 0, profit: 0 },
-        { name: 'Fondid', value: 24.48, profit: 4.48 }
-    ];
-
-    let chartInstance = null;
-
-    function render() {
-        const body = document.getElementById('portfolioBody');
-        body.innerHTML = '';
-        let totalV = 0;
-        let totalP = 0;
-
-        myAssets.forEach((asset) => {
-            totalV += asset.value;
-            totalP += asset.profit;
-            const perc = asset.value > 0 ? ((asset.profit / (asset.value - asset.profit)) * 100).toFixed(2) : "0.00";
-            
-            body.innerHTML += `
-                <tr>
-                    <td><a href="#" class="link">${asset.name}</a></td>
-                    <td class="positive" style="text-align: right;">${asset.profit.toFixed(2)} EUR / ${perc}%</td>
-                    <td style="text-align: right;">${asset.value.toFixed(2)}</td>
-                </tr>
-            `;
-        });
-
-        // Update Totals
-        const totalPerc = totalV > 0 ? ((totalP / (totalV - totalP)) * 100).toFixed(2) : "0.00";
-        document.getElementById('totalValue').innerText = totalV.toFixed(2);
-        document.getElementById('totalProfit').innerText = `${totalP.toFixed(2)} EUR / ${totalPerc}%`;
-
-        localStorage.setItem('swedMockData', JSON.stringify(myAssets));
-        updateChart();
-    }
-
-    function addAsset() {
-        const name = document.getElementById('assetName').value;
-        const val = parseFloat(document.getElementById('assetValue').value);
-        const prof = parseFloat(document.getElementById('assetProfit').value);
-
-        if(name && !isNaN(val)) {
-            myAssets.push({ name, value: val, profit: prof || 0 });
-            render();
-        }
-    }
-
-    function clearData() {
-        myAssets = [];
-        render();
-    }
-
-    function updateChart() {
-        const ctx = document.getElementById('portfolioChart').getContext('2d');
-        const labels = myAssets.map(a => a.name);
-        const data = myAssets.map(a => a.value);
-
-        if(chartInstance) chartInstance.destroy();
-
-        chartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    backgroundColor: ['#ee7023', '#ffcc00', '#00768e', '#588e00'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                cutout: '70%',
-                plugins: { legend: { display: false } }
+    // Sektordiagrammi joonistamine
+    const ctx = document.getElementById('portfolioChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Fondid'],
+            datasets: [{
+                data: [100],
+                backgroundColor: ['#ee7023'],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            cutout: '70%',
+            plugins: {
+                legend: { display: false }
             }
-        });
-        
-        const labelDiv = document.getElementById('chartLabel');
-        labelDiv.innerHTML = labels.map((l, i) => `<span style="color: #ee7023">●</span> ${l} 100%`).join('<br>');
-    }
-
-    render();
+        }
+    });
 </script>
+
 </body>
 </html>
