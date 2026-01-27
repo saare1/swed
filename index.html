@@ -1,194 +1,179 @@
 <!DOCTYPE html>
-<html lang="et" class="authenticated -private">
+<html lang="et">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Minu portfell - Swedbank</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfelli ülevaade - Swedbank</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* CSS: THE "SKIN" - Based on your uploaded code */
         :root {
-            --swedbank-orange: #ee7023;
-            --bg-gray: #f4f4f4;
-            --text-dark: #333;
+            --swed-orange: #ee7023;
+            --swed-yellow: #ffcc00;
+            --text-gray: #555;
+            --bg-gray: #f9f9f9;
         }
 
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background-color: var(--bg-gray);
-            margin: 0;
-            padding: 20px;
-            color: var(--text-dark);
-        }
+        body { font-family: Arial, sans-serif; background-color: white; margin: 40px; color: #333; }
+        
+        /* Navigation Tabs */
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 30px; }
+        .tab { padding: 10px 20px; border-radius: 20px; background: #eee; font-size: 14px; cursor: pointer; color: #666; }
+        .tab.active { background: var(--swed-yellow); color: black; font-weight: bold; }
 
-        .portfolio-wrapper {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: #fff;
-            border-top: 4px solid var(--swedbank-orange);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            padding: 25px;
-        }
+        h2 { color: var(--swed-orange); font-size: 22px; margin-bottom: 20px; }
 
-        h1 {
-            color: var(--swedbank-orange);
-            font-size: 24px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-        }
+        .main-content { display: flex; justify-content: space-between; align-items: flex-start; gap: 50px; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+        /* Table Styling */
+        .table-container { flex: 1; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; font-size: 13px; border-bottom: 2px solid var(--swed-orange); padding: 10px 5px; color: black; }
+        td { padding: 12px 5px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .row-total { font-weight: bold; border-top: 1px solid #ccc; }
+        .positive { color: #588e00; font-weight: bold; }
+        .link { color: #00768e; text-decoration: none; border-bottom: 1px solid transparent; }
+        .link:hover { border-bottom: 1px solid #00768e; }
 
-        th {
-            text-align: left;
-            font-size: 12px;
-            color: #777;
-            text-transform: uppercase;
-            padding: 12px;
-            border-bottom: 2px solid #eee;
-        }
+        /* Chart Area */
+        .chart-container { width: 300px; text-align: center; }
+        #chartLabel { margin-top: 15px; font-size: 14px; font-weight: bold; }
 
-        td {
-            padding: 15px 12px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-
-        .stock-name { font-weight: 700; color: #000; }
-        .price-cell { font-family: monospace; font-weight: bold; }
-
-        /* Control Panel Styles */
-        .admin-controls {
-            margin-top: 40px;
-            padding: 20px;
-            background: #fffcf5;
-            border: 1px dashed var(--swedbank-orange);
-            border-radius: 4px;
-        }
-
-        .admin-controls input {
-            padding: 10px;
-            margin-right: 10px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
-        .add-btn {
-            background: var(--swedbank-orange);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .add-btn:hover { background: #d35400; }
-        .delete-btn { color: red; cursor: pointer; font-size: 12px; margin-left: 10px; }
+        /* Admin Panel for adding fake stocks */
+        .admin-panel { margin-top: 50px; padding: 20px; border: 1px dashed #ccc; background: var(--bg-gray); border-radius: 8px; }
+        .admin-panel input { padding: 8px; margin-right: 10px; border: 1px solid #ccc; }
+        .admin-btn { background: var(--swed-orange); color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-<div class="portfolio-wrapper">
-    <h1>Minu portfell</h1>
-
-    <table id="portfolioTable">
-        <thead>
-            <tr>
-                <th>Instrument</th>
-                <th>Kogus</th>
-                <th>Hind (EUR)</th>
-                <th>Turuväärtus</th>
-                <th>Tegevus</th>
-            </tr>
-        </thead>
-        <tbody id="portfolioBody">
-            </tbody>
-    </table>
-
-    <div class="admin-controls">
-        <h3>Lisa väärtpaber portfelli</h3>
-        <input type="text" id="stockName" placeholder="Aktsia nimi">
-        <input type="number" id="stockQty" placeholder="Kogus">
-        <input type="number" id="stockPrice" placeholder="Ühiku hind">
-        <button class="add-btn" onclick="addNewStock()">Lisa rida</button>
+    <div class="nav-tabs">
+        <div class="tab active">Investeeringud</div>
+        <div class="tab">Arvelduskontod</div>
+        <div class="tab">Pension</div>
+        <div class="tab">Hoiused</div>
+        <div class="tab">Kogumine elukindlustusega</div>
     </div>
-</div>
+
+    <h2>Portfelli ülevaade</h2>
+
+    <div class="main-content">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40%;">Vara liik</th>
+                        <th style="width: 30%; text-align: right;">Kasum</th>
+                        <th style="width: 30%; text-align: right;">Väärtus (EUR)</th>
+                    </tr>
+                </thead>
+                <tbody id="portfolioBody">
+                    </tbody>
+                <tfoot>
+                    <tr class="row-total">
+                        <td>Portfell kokku</td>
+                        <td id="totalProfit" class="positive" style="text-align: right;">0.00 EUR / 0.00%</td>
+                        <td id="totalValue" style="text-align: right;">0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="portfolioChart"></canvas>
+            <div id="chartLabel"></div>
+        </div>
+    </div>
+
+    <div class="admin-panel">
+        <h3>Halda oma "aktsiaid"</h3>
+        <input type="text" id="assetName" placeholder="Vara nimi (nt: Fondid)">
+        <input type="number" id="assetValue" placeholder="Väärtus (EUR)">
+        <input type="number" id="assetProfit" placeholder="Kasum (EUR)">
+        <button class="admin-btn" onclick="addAsset()">Lisa / Uuenda</button>
+        <button style="background: #999;" class="admin-btn" onclick="clearData()">Tühjenda</button>
+    </div>
 
 <script>
-    /* JAVASCRIPT: THE "BRAINS" */
-    
-    // 1. Load data from browser memory (localStorage) on startup
-    window.onload = function() {
-        displayStocks();
-    };
+    let myAssets = JSON.parse(localStorage.getItem('swedMockData')) || [
+        { name: 'Raha', value: 0, profit: 0 },
+        { name: 'Fondid', value: 24.48, profit: 4.48 }
+    ];
 
-    function addNewStock() {
-        const name = document.getElementById('stockName').value;
-        const qty = document.getElementById('stockQty').value;
-        const price = document.getElementById('stockPrice').value;
+    let chartInstance = null;
 
-        if (!name || !qty || !price) {
-            alert("Palun täida kõik väljad!");
-            return;
-        }
-
-        const newStock = {
-            id: Date.now(),
-            name: name,
-            qty: parseFloat(qty),
-            price: parseFloat(price)
-        };
-
-        // Get existing stocks from memory
-        let stocks = JSON.parse(localStorage.getItem('myPortfolio')) || [];
-        stocks.push(newStock);
-        
-        // Save back to memory
-        localStorage.setItem('myPortfolio', JSON.stringify(stocks));
-
-        // Refresh display
-        displayStocks();
-        
-        // Clear inputs
-        document.getElementById('stockName').value = '';
-        document.getElementById('stockQty').value = '';
-        document.getElementById('stockPrice').value = '';
-    }
-
-    function displayStocks() {
+    function render() {
         const body = document.getElementById('portfolioBody');
-        const stocks = JSON.parse(localStorage.getItem('myPortfolio')) || [];
-        
         body.innerHTML = '';
+        let totalV = 0;
+        let totalP = 0;
 
-        stocks.forEach(stock => {
-            const total = (stock.qty * stock.price).toFixed(2);
-            const row = `
+        myAssets.forEach((asset) => {
+            totalV += asset.value;
+            totalP += asset.profit;
+            const perc = asset.value > 0 ? ((asset.profit / (asset.value - asset.profit)) * 100).toFixed(2) : "0.00";
+            
+            body.innerHTML += `
                 <tr>
-                    <td class="stock-name">${stock.name}</td>
-                    <td>${stock.qty}</td>
-                    <td class="price-cell">${stock.price.toFixed(2)} €</td>
-                    <td class="price-cell">${total} €</td>
-                    <td><span class="delete-btn" onclick="deleteStock(${stock.id})">Kustuta</span></td>
+                    <td><a href="#" class="link">${asset.name}</a></td>
+                    <td class="positive" style="text-align: right;">${asset.profit.toFixed(2)} EUR / ${perc}%</td>
+                    <td style="text-align: right;">${asset.value.toFixed(2)}</td>
                 </tr>
             `;
-            body.innerHTML += row;
         });
+
+        // Update Totals
+        const totalPerc = totalV > 0 ? ((totalP / (totalV - totalP)) * 100).toFixed(2) : "0.00";
+        document.getElementById('totalValue').innerText = totalV.toFixed(2);
+        document.getElementById('totalProfit').innerText = `${totalP.toFixed(2)} EUR / ${totalPerc}%`;
+
+        localStorage.setItem('swedMockData', JSON.stringify(myAssets));
+        updateChart();
     }
 
-    function deleteStock(id) {
-        let stocks = JSON.parse(localStorage.getItem('myPortfolio')) || [];
-        stocks = stocks.filter(s => s.id !== id);
-        localStorage.setItem('myPortfolio', JSON.stringify(stocks));
-        displayStocks();
+    function addAsset() {
+        const name = document.getElementById('assetName').value;
+        const val = parseFloat(document.getElementById('assetValue').value);
+        const prof = parseFloat(document.getElementById('assetProfit').value);
+
+        if(name && !isNaN(val)) {
+            myAssets.push({ name, value: val, profit: prof || 0 });
+            render();
+        }
     }
+
+    function clearData() {
+        myAssets = [];
+        render();
+    }
+
+    function updateChart() {
+        const ctx = document.getElementById('portfolioChart').getContext('2d');
+        const labels = myAssets.map(a => a.name);
+        const data = myAssets.map(a => a.value);
+
+        if(chartInstance) chartInstance.destroy();
+
+        chartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: ['#ee7023', '#ffcc00', '#00768e', '#588e00'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                cutout: '70%',
+                plugins: { legend: { display: false } }
+            }
+        });
+        
+        const labelDiv = document.getElementById('chartLabel');
+        labelDiv.innerHTML = labels.map((l, i) => `<span style="color: #ee7023">●</span> ${l} 100%`).join('<br>');
+    }
+
+    render();
 </script>
-
 </body>
 </html>
