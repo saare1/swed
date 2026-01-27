@@ -11,32 +11,44 @@
             --swed-yellow: #ffcc00;
             --bg-cream: #fbf8f1;
             --text-dark: #333;
+            --link-blue: #00768e;
+            --row-bg: #fdfcf9;
         }
 
         body { font-family: Arial, sans-serif; background-color: var(--bg-cream); margin: 0; padding: 20px; color: var(--text-dark); }
-        .container { max-width: 1100px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; }
         
-        h1 { color: var(--swed-orange); font-size: 32px; margin-bottom: 20px; }
         .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h1 { color: var(--swed-orange); font-size: 32px; margin-bottom: 20px; }
+        h3 { color: var(--swed-orange); margin-top: 0; }
 
+        /* Tabid */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab { padding: 10px 20px; border-radius: 20px; background: #eee; font-size: 14px; color: #555; }
         .tab.active { background: var(--swed-yellow); color: black; font-weight: bold; }
 
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; font-size: 13px; border-bottom: 2px solid var(--swed-orange); padding: 10px; }
+        /* Tabelid */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        th { text-align: left; font-size: 13px; border-bottom: 2px solid var(--swed-orange); padding: 10px; color: #000; }
         td { padding: 12px 10px; border-bottom: 1px solid #eee; font-size: 14px; }
+        
+        .category-header { background-color: #f9f2f0; font-weight: bold; font-size: 15px; padding: 10px; }
+        .subtotal-row { font-weight: bold; border-top: 1px solid #ccc; }
+        
         .val-right { text-align: right; }
         .positive { color: #588e00; font-weight: bold; }
-        .link { color: #00768e; text-decoration: none; font-weight: bold; }
+        .negative { color: #d0021b; font-weight: bold; }
+        .link { color: var(--link-blue); text-decoration: none; font-weight: bold; cursor: pointer; }
 
         .flex-box { display: flex; justify-content: space-between; gap: 40px; }
         .chart-container { width: 300px; text-align: center; }
 
-        .admin-panel { background: #fffcf5; border: 1px dashed var(--swed-orange); padding: 20px; border-radius: 8px; margin-top: 40px; }
-        .admin-panel input, .admin-panel select { padding: 10px; margin: 5px; border: 1px solid #ccc; border-radius: 4px; }
-        .add-btn { background: var(--swed-orange); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .delete-btn { color: #cc0000; cursor: pointer; font-size: 12px; }
+        /* Administraatori paneel */
+        .admin-panel { background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-top: 40px; }
+        .admin-panel input, .admin-panel select { padding: 8px; margin: 5px; border: 1px solid #ccc; border-radius: 4px; }
+        .add-btn { background: var(--swed-orange); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .delete-btn { color: #999; cursor: pointer; font-size: 12px; font-weight: normal; margin-left: 8px; }
+        .delete-btn:hover { color: red; }
     </style>
 </head>
 <body>
@@ -54,7 +66,7 @@
 
         <div class="flex-box">
             <div style="flex: 1;">
-                <h3 style="color: var(--swed-orange);">Portfelli ülevaade</h3>
+                <h3>Portfelli ülevaade</h3>
                 <table>
                     <thead>
                         <tr>
@@ -63,13 +75,12 @@
                             <th class="val-right">Väärtus (EUR)</th>
                         </tr>
                     </thead>
-                    <tbody id="overviewBody">
-                        </tbody>
+                    <tbody id="overviewBody"></tbody>
                     <tfoot>
                         <tr style="font-weight: bold; background: #fafafa;">
                             <td>Portfell kokku</td>
-                            <td class="val-right positive" id="totalProfit">0.00 EUR</td>
-                            <td class="val-right" id="totalValue">0.00</td>
+                            <td class="val-right positive" id="topTotalProfit">0.00 EUR / 0.00%</td>
+                            <td class="val-right" id="topTotalValue">0.00</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -82,124 +93,164 @@
     </div>
 
     <div class="card">
-        <h3 style="color: var(--swed-orange);">Investeerimine: Minu investeering</h3>
-        <table>
+        <h3>Investeerimine: <span style="text-decoration: underline; cursor: pointer;">Minu investeering</span> ✏️</h3>
+        <table id="fullDetailTable">
             <thead>
                 <tr>
-                    <th>Väärtpaber</th>
-                    <th>Tüüp</th>
-                    <th class="val-right">Saldo</th>
+                    <th style="width: 30%;">Väärtpaber</th>
+                    <th class="val-right">Saldo / positsioon</th>
                     <th class="val-right">Hind</th>
+                    <th class="val-right">Päevane muutus</th>
                     <th class="val-right">Kasum</th>
                     <th class="val-right">Väärtus</th>
-                    <th></th>
                 </tr>
             </thead>
-            <tbody id="detailBody"></tbody>
+            <tbody id="detailBody">
+                </tbody>
         </table>
     </div>
 
     <div class="admin-panel">
-        <h3>Lisa uus positsioon</h3>
-        <input type="text" id="inName" placeholder="Nimi (nt: Apple)">
+        <h4 style="margin-top:0;">Halda portfelli</h4>
+        <input type="text" id="inName" placeholder="Nimi (nt: APPLE INC)">
         <select id="inType">
-            <option value="Fondid">Fond</option>
-            <option value="Aktsiad">Aktsia</option>
+            <option value="Fondid">Fondid</option>
+            <option value="Aktsiad">Aktsiad</option>
         </select>
-        <input type="number" id="inQty" placeholder="Kogus">
-        <input type="number" id="inPrice" placeholder="Hind">
-        <input type="number" id="inProfit" placeholder="Kasum">
-        <button class="add-btn" onclick="addItem()">Lisa rida</button>
+        <input type="number" id="inQty" step="any" placeholder="Saldo (kogus)">
+        <input type="number" id="inPrice" step="any" placeholder="Hind">
+        <input type="number" id="inDayChange" step="any" placeholder="Päevane muutus (EUR)">
+        <input type="number" id="inProfit" step="any" placeholder="Kasum (EUR)">
+        <button class="add-btn" onclick="addItem()">Lisa portfelli</button>
     </div>
 </div>
 
 <script>
-    let assets = JSON.parse(localStorage.getItem('swed_assets_v2')) || [
-        { name: 'SWEDBANK ROBUR ACCESS EDGE GLOBAL C', type: 'Fondid', qty: 1.4609, price: 16.7561, profit: 4.48 }
+    // Algandmed
+    let assets = JSON.parse(localStorage.getItem('swed_v3')) || [
+        { name: 'SWEDBANK ROBUR ACCESS EDGE GLOBAL C', type: 'Fondid', qty: 1.4609, price: 16.7561, dayChange: -0.13, profit: 4.48 }
     ];
 
     let myChart = null;
 
     function render() {
-        const overviewBody = document.getElementById('overviewBody');
         const detailBody = document.getElementById('detailBody');
-        overviewBody.innerHTML = '';
+        const overviewBody = document.getElementById('overviewBody');
         detailBody.innerHTML = '';
+        overviewBody.innerHTML = '';
 
-        let totals = { Fondid: { v: 0, p: 0 }, Aktsiad: { v: 0, p: 0 } };
+        let groups = { Fondid: [], Aktsiad: [] };
         let grandTotalV = 0;
         let grandTotalP = 0;
 
-        assets.forEach((item, index) => {
-            const val = item.qty * item.price;
-            totals[item.type].v += val;
-            totals[item.type].p += item.profit;
-            grandTotalV += val;
-            grandTotalP += item.profit;
+        assets.forEach((item, index) => groups[item.type].push({...item, id: index}));
+
+        ['Fondid', 'Aktsiad'].forEach(type => {
+            if (groups[type].length === 0) return;
+
+            // Lisa kategooria päis
+            detailBody.innerHTML += `<tr><td colspan="6" class="category-header">${type}</td></tr>`;
+
+            let groupV = 0;
+            let groupP = 0;
+            let groupD = 0;
+
+            groups[type].forEach(item => {
+                const currentVal = item.qty * item.price;
+                const costBasis = currentVal - item.profit;
+                const profitPct = costBasis > 0 ? (item.profit / costBasis * 100).toFixed(2) : "0.00";
+                const dayChangePct = currentVal > 0 ? (item.dayChange / currentVal * 100).toFixed(2) : "0.00";
+                
+                groupV += currentVal;
+                groupP += item.profit;
+                groupD += item.dayChange;
+
+                detailBody.innerHTML += `
+                    <tr>
+                        <td><span class="link">${item.name}</span> <span class="delete-btn" onclick="deleteItem(${item.id})">Kustuta</span></td>
+                        <td class="val-right">${item.qty.toFixed(4)}</td>
+                        <td class="val-right">${item.price.toFixed(4)} EUR</td>
+                        <td class="val-right ${item.dayChange < 0 ? 'negative' : 'positive'}">
+                            ${item.dayChange.toFixed(2)} EUR / ${dayChangePct}%
+                        </td>
+                        <td class="val-right positive">${item.profit.toFixed(2)} EUR / ${profitPct}%</td>
+                        <td class="val-right">${currentVal.toFixed(2)} EUR</td>
+                    </tr>`;
+            });
+
+            // Kategooria kokkuvõtte rida
+            const groupProfitPct = (groupV - groupP) > 0 ? (groupP / (groupV - groupP) * 100).toFixed(2) : "0.00";
+            const groupDayPct = groupV > 0 ? (groupD / groupV * 100).toFixed(2) : "0.00";
 
             detailBody.innerHTML += `
-                <tr>
-                    <td><span class="link">${item.name}</span></td>
-                    <td>${item.type}</td>
-                    <td class="val-right">${item.qty.toFixed(4)}</td>
-                    <td class="val-right">${item.price.toFixed(2)}</td>
-                    <td class="val-right positive">${item.profit.toFixed(2)}</td>
-                    <td class="val-right">${val.toFixed(2)}</td>
-                    <td><span class="delete-btn" onclick="deleteItem(${index})">Kustuta</span></td>
+                <tr class="subtotal-row">
+                    <td>Investeeringud kokku</td>
+                    <td colspan="2"></td>
+                    <td class="val-right ${groupD < 0 ? 'negative' : 'positive'}">${groupD.toFixed(2)} EUR / ${groupDayPct}%</td>
+                    <td class="val-right positive">${groupP.toFixed(2)} EUR / ${groupProfitPct}%</td>
+                    <td class="val-right">${groupV.toFixed(2)} EUR</td>
                 </tr>`;
+
+            // Lisa ka ülemisse "Portfelli ülevaade" tabelisse
+            overviewBody.innerHTML += `
+                <tr>
+                    <td><span class="link">${type}</span></td>
+                    <td class="val-right positive">${groupP.toFixed(2)} EUR / ${groupProfitPct}%</td>
+                    <td class="val-right">${groupV.toFixed(2)}</td>
+                </tr>`;
+
+            grandTotalV += groupV;
+            grandTotalP += groupP;
         });
 
-        // Ülemine tabel - ainult Fondid ja Aktsiad read
-        ['Fondid', 'Aktsiad'].forEach(type => {
-            if (totals[type].v > 0) {
-                const perc = ((totals[type].p / (totals[type].v - totals[type].p)) * 100).toFixed(2);
-                overviewBody.innerHTML += `
-                    <tr>
-                        <td><span class="link">${type}</span></td>
-                        <td class="val-right positive">${totals[type].p.toFixed(2)} EUR / ${perc}%</td>
-                        <td class="val-right">${totals[type].v.toFixed(2)}</td>
-                    </tr>`;
-            }
-        });
+        // Portfell kokku summad
+        const grandProfitPct = (grandTotalV - grandTotalP) > 0 ? (grandTotalP / (grandTotalV - grandTotalP) * 100).toFixed(2) : "0.00";
+        document.getElementById('topTotalValue').innerText = grandTotalV.toFixed(2);
+        document.getElementById('topTotalProfit').innerText = `${grandTotalP.toFixed(2)} EUR / ${grandProfitPct}%`;
 
-        document.getElementById('totalValue').innerText = grandTotalV.toFixed(2);
-        document.getElementById('totalProfit').innerText = grandTotalP.toFixed(2) + " EUR";
-
-        updateChart(totals);
-        localStorage.setItem('swed_assets_v2', JSON.stringify(assets));
+        updateChart(grandTotalV, groups);
+        localStorage.setItem('swed_v3', JSON.stringify(assets));
     }
 
     function addItem() {
-        const name = document.getElementById('inName').value;
+        const name = document.getElementById('inName').value.toUpperCase();
         const type = document.getElementById('inType').value;
         const qty = parseFloat(document.getElementById('inQty').value);
         const price = parseFloat(document.getElementById('inPrice').value);
+        const dayChange = parseFloat(document.getElementById('inDayChange').value) || 0;
         const profit = parseFloat(document.getElementById('inProfit').value) || 0;
 
         if (name && qty && price) {
-            assets.push({ name, type, qty, price, profit });
+            assets.push({ name, type, qty, price, dayChange, profit });
             render();
         }
     }
 
-    function deleteItem(i) { assets.splice(i, 1); render(); }
+    function deleteItem(index) { assets.splice(index, 1); render(); }
 
-    function updateChart(totals) {
+    function updateChart(total, groups) {
         const ctx = document.getElementById('portfolioChart').getContext('2d');
-        const dataValues = [totals.Fondid.v, totals.Aktsiad.v].filter(v => v > 0);
-        const dataLabels = ['Fondid', 'Aktsiad'].filter(t => totals[t].v > 0);
+        const fondValue = groups.Fondid.reduce((sum, i) => sum + (i.qty * i.price), 0);
+        const aktsiaValue = groups.Aktsiad.reduce((sum, i) => sum + (i.qty * i.price), 0);
 
         if (myChart) myChart.destroy();
         myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: dataLabels,
-                datasets: [{ data: dataValues, backgroundColor: ['#ee7023', '#00768e'], borderWidth: 0 }]
+                labels: ['Fondid', 'Aktsiad'],
+                datasets: [{
+                    data: [fondValue, aktsiaValue],
+                    backgroundColor: ['#ee7023', '#00768e'],
+                    borderWidth: 0
+                }]
             },
-            options: { cutout: '70%', plugins: { legend: { display: false } } }
+            options: { cutout: '75%', plugins: { legend: { display: false } } }
         });
-        
-        document.getElementById('chartLegend').innerHTML = dataLabels.map((l, i) => `<div>● ${l} 100%</div>`).join('');
+
+        let legendHTML = '';
+        if (fondValue > 0) legendHTML += `<div><span style="color:#ee7023">●</span> Fondid ${(fondValue/total*100).toFixed(2)}%</div>`;
+        if (aktsiaValue > 0) legendHTML += `<div><span style="color:#00768e">●</span> Aktsiad ${(aktsiaValue/total*100).toFixed(2)}%</div>`;
+        document.getElementById('chartLegend').innerHTML = legendHTML;
     }
 
     render();
