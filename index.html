@@ -15,14 +15,24 @@
         }
 
         body { font-family: Arial, sans-serif; background-color: var(--bg-cream); margin: 0; padding: 20px; color: var(--text-dark); }
-        .container { max-width: 1200px; margin: 0 auto; position: relative; }
+        .container { max-width: 1200px; margin: 0 auto; position: relative; padding-top: 30px; }
         
+        /* Seadete link TÄIESTI VASAKUL ÜLAL */
+        .settings-link { 
+            position: absolute; 
+            left: 0; 
+            top: 0; 
+            color: #ccc; /* Tee see halliks, et oleks märkamatum */
+            font-size: 11px; 
+            text-decoration: none; 
+            cursor: pointer; 
+            padding: 5px;
+        }
+        .settings-link:hover { color: var(--link-blue); }
+
         .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
         h1 { color: var(--swed-orange); font-size: 32px; margin-bottom: 20px; }
         h3 { color: var(--swed-orange); margin-top: 0; }
-
-        /* Seadete link paremal ülal */
-        .settings-link { position: absolute; right: 0; top: 65px; color: var(--link-blue); font-size: 14px; text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 5px; }
 
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab { padding: 10px 20px; border-radius: 20px; background: #eee; font-size: 14px; color: #555; }
@@ -43,13 +53,14 @@
         .flex-box { display: flex; justify-content: space-between; gap: 40px; }
         .chart-container { width: 300px; text-align: center; }
 
-        /* PEIDETUD HALDUS PANEEL */
+        /* PEIDETUD HALDUS */
         #adminPanel { display: none; background: #fff; border: 2px dashed var(--swed-orange); padding: 20px; border-radius: 8px; margin-top: 40px; }
         .admin-panel input, .admin-panel select { padding: 8px; margin: 5px; border: 1px solid #ccc; border-radius: 4px; }
         .add-btn { background: var(--swed-orange); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         
-        /* Peidetud kustutamise nupud */
-        .delete-btn { display: none; color: #ccc; cursor: pointer; font-size: 10px; margin-left: 10px; }
+        .delete-btn { display: none; color: #ff0000; cursor: pointer; font-size: 10px; margin-left: 10px; text-decoration: underline; }
+        
+        /* Aktiveerub klassi lisamisel JS-iga */
         .admin-active .delete-btn { display: inline; }
         .admin-active #adminPanel { display: block; }
     </style>
@@ -57,8 +68,9 @@
 <body>
 
 <div class="container" id="mainContainer">
-    <div class="settings-link" onclick="toggleAdmin()">▶ Seaded</div>
+    <div class="settings-link" onclick="toggleAdmin()">⚙️ Halda vaadet</div>
     
+    <div class="breadcrumb" style="font-size: 12px; color: #666; margin-bottom: 10px;">Avaleht > Kogumine, investeerimine > <strong>Minu portfell</strong></div>
     <h1>Minu portfell</h1>
 
     <div class="card">
@@ -99,8 +111,8 @@
     </div>
 
     <div class="card">
-        <h3>Investeerimine: <span class="link" style="color: var(--swed-orange); border-bottom: 1px solid var(--swed-orange);">Minu investeering</span> ✏️</h3>
-        <table id="fullDetailTable">
+        <h3>Investeerimine: <span class="link" style="color: var(--swed-orange); border-bottom: 1px solid var(--swed-orange); font-weight: normal;">Minu investeering</span> ✏️</h3>
+        <table>
             <thead>
                 <tr>
                     <th style="width: 30%;">Väärtpaber</th>
@@ -116,18 +128,18 @@
     </div>
 
     <div id="adminPanel" class="admin-panel">
-        <h4 style="margin-top:0;">Halduspaneel (Peidetud vaade)</h4>
-        <input type="text" id="inName" placeholder="Nimi (nt: APPLE INC)">
+        <h4 style="margin-top:0;">Portfelli muutmine</h4>
+        <input type="text" id="inName" placeholder="Aktsia/Fondi nimi">
         <select id="inType">
             <option value="Fondid">Fondid</option>
             <option value="Aktsiad">Aktsiad</option>
         </select>
-        <input type="number" id="inQty" step="any" placeholder="Saldo">
+        <input type="number" id="inQty" step="any" placeholder="Kogus">
         <input type="number" id="inPrice" step="any" placeholder="Hind">
         <input type="number" id="inDayChange" step="any" placeholder="Päevane muutus (€)">
-        <input type="number" id="inProfit" step="any" placeholder="Kasum (€)">
+        <input type="number" id="inProfit" step="any" placeholder="Kogukasum (€)">
         <button class="add-btn" onclick="addItem()">Lisa portfelli</button>
-        <button onclick="toggleAdmin()" style="background:#666; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer; margin-left:10px;">Sulge haldus</button>
+        <button onclick="toggleAdmin()" style="background:#666; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer;">Peida haldus</button>
     </div>
 </div>
 
@@ -142,7 +154,6 @@
         document.getElementById('mainContainer').classList.toggle('admin-active');
     }
 
-    // Salajane klahv: Vajuta 'H', et avada haldus
     document.addEventListener('keydown', function(e) {
         if (e.key.toLowerCase() === 'h') toggleAdmin();
     });
@@ -154,44 +165,42 @@
         overviewBody.innerHTML = '';
 
         let groups = { Fondid: [], Aktsiad: [] };
-        let grandTotalV = 0;
-        let grandTotalP = 0;
+        let grandTotalV = 0, grandTotalP = 0;
 
         assets.forEach((item, index) => groups[item.type].push({...item, id: index}));
 
         ['Fondid', 'Aktsiad'].forEach(type => {
             if (groups[type].length === 0) return;
             detailBody.innerHTML += `<tr><td colspan="6" class="category-header">${type}</td></tr>`;
-            let groupV = 0, groupP = 0, groupD = 0;
+            let gV = 0, gP = 0;
 
             groups[type].forEach(item => {
-                const currentVal = item.qty * item.price;
-                const costBasis = currentVal - item.profit;
-                const profitPct = costBasis > 0 ? (item.profit / costBasis * 100).toFixed(2) : "0.00";
-                const dayChangePct = currentVal > 0 ? (item.dayChange / currentVal * 100).toFixed(2) : "0.00";
-                
-                groupV += currentVal; groupP += item.profit; groupD += item.dayChange;
+                const val = item.qty * item.price;
+                const cost = val - item.profit;
+                const pPct = cost > 0 ? (item.profit / cost * 100).toFixed(2) : "0.00";
+                const dPct = val > 0 ? (item.dayChange / val * 100).toFixed(2) : "0.00";
+                gV += val; gP += item.profit;
 
                 detailBody.innerHTML += `
                     <tr>
-                        <td><span class="link" style="color:#00768e">${item.name}</span> <span class="delete-btn" onclick="deleteItem(${item.id})"> (Kustuta)</span></td>
+                        <td><span class="link">${item.name}</span> <span class="delete-btn" onclick="deleteItem(${item.id})">[X]</span></td>
                         <td class="val-right">${item.qty.toFixed(4)}</td>
                         <td class="val-right">${item.price.toFixed(4)} EUR</td>
-                        <td class="val-right ${item.dayChange < 0 ? 'negative' : 'positive'}">${item.dayChange.toFixed(2)} EUR / ${dayChangePct}%</td>
-                        <td class="val-right positive">${item.profit.toFixed(2)} EUR / ${profitPct}%</td>
-                        <td class="val-right">${currentVal.toFixed(2)} EUR</td>
+                        <td class="val-right ${item.dayChange < 0 ? 'negative' : 'positive'}">${item.dayChange.toFixed(2)} EUR / ${dPct}%</td>
+                        <td class="val-right positive">${item.profit.toFixed(2)} EUR / ${pPct}%</td>
+                        <td class="val-right">${val.toFixed(2)} EUR</td>
                     </tr>`;
             });
 
-            const groupProfitPct = (groupV - groupP) > 0 ? (groupP / (groupV - groupP) * 100).toFixed(2) : "0.00";
-            detailBody.innerHTML += `<tr class="subtotal-row"><td colspan="4">Investeeringud kokku</td><td class="val-right positive">${groupP.toFixed(2)} EUR / ${groupProfitPct}%</td><td class="val-right">${groupV.toFixed(2)} EUR</td></tr>`;
-            overviewBody.innerHTML += `<tr><td><span class="link" style="color:#00768e">${type}</span></td><td class="val-right positive">${groupP.toFixed(2)} EUR / ${groupProfitPct}%</td><td class="val-right">${groupV.toFixed(2)}</td></tr>`;
-            grandTotalV += groupV; grandTotalP += groupP;
+            const gPPct = (gV - gP) > 0 ? (gP / (gV - gP) * 100).toFixed(2) : "0.00";
+            detailBody.innerHTML += `<tr class="subtotal-row"><td colspan="4">Investeeringud kokku</td><td class="val-right positive">${gP.toFixed(2)} EUR / ${gPPct}%</td><td class="val-right">${gV.toFixed(2)} EUR</td></tr>`;
+            overviewBody.innerHTML += `<tr><td><span class="link">${type}</span></td><td class="val-right positive">${gP.toFixed(2)} EUR / ${gPPct}%</td><td class="val-right">${gV.toFixed(2)}</td></tr>`;
+            grandTotalV += gV; grandTotalP += gP;
         });
 
-        const grandProfitPct = (grandTotalV - grandTotalP) > 0 ? (grandTotalP / (grandTotalV - grandTotalP) * 100).toFixed(2) : "0.00";
+        const gtPPct = (grandTotalV - grandTotalP) > 0 ? (grandTotalP / (grandTotalV - grandTotalP) * 100).toFixed(2) : "0.00";
         document.getElementById('topTotalValue').innerText = grandTotalV.toFixed(2);
-        document.getElementById('topTotalProfit').innerText = `${grandTotalP.toFixed(2)} EUR / ${grandProfitPct}%`;
+        document.getElementById('topTotalProfit').innerText = `${grandTotalP.toFixed(2)} EUR / ${gtPPct}%`;
 
         updateChart(grandTotalV, groups);
         localStorage.setItem('swed_v3', JSON.stringify(assets));
@@ -215,7 +224,11 @@
         const aV = groups.Aktsiad.reduce((s, i) => s + (i.qty * i.price), 0);
         if (myChart) myChart.destroy();
         myChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Fondid', 'Aktsiad'], datasets: [{ data: [fV, aV], backgroundColor: ['#ee7023', '#00768e'], borderWidth: 0 }] }, options: { cutout: '75%', plugins: { legend: { display: false } } } });
-        document.getElementById('chartLegend').innerHTML = `<div><span style="color:#ee7023">●</span> Fondid 100,00%</div>`;
+        
+        let legendHTML = '';
+        if (fV > 0) legendHTML += `<div><span style="color:#ee7023">●</span> Fondid ${(fV/total*100).toFixed(2)}%</div>`;
+        if (aV > 0) legendHTML += `<div><span style="color:#00768e">●</span> Aktsiad ${(aV/total*100).toFixed(2)}%</div>`;
+        document.getElementById('chartLegend').innerHTML = legendHTML;
     }
 
     render();
