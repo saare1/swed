@@ -17,7 +17,6 @@
         body { font-family: Arial, sans-serif; background-color: var(--bg-cream); margin: 0; padding: 20px; color: var(--text-dark); }
         .container { max-width: 1200px; margin: 0 auto; position: relative; padding-top: 30px; }
         
-        /* Seaded vasakul ülal */
         .settings-link { 
             position: absolute; 
             left: 0; 
@@ -53,12 +52,23 @@
         .flex-box { display: flex; justify-content: space-between; gap: 40px; }
         .chart-container { width: 300px; text-align: center; }
 
-        /* Halduspaneel on vaikimisi peidus */
+        /* HALDUSREŽIIM */
         #adminPanel { display: none; background: #fff; border: 2px dashed var(--swed-orange); padding: 20px; border-radius: 8px; margin-top: 40px; }
         .admin-panel input, .admin-panel select { padding: 8px; margin: 5px; border: 1px solid #ccc; border-radius: 4px; }
         .add-btn { background: var(--swed-orange); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         
-        /* Aktiveerub klassi lisamisel */
+        /* Peidetud kustutamise nupp */
+        .delete-btn { 
+            display: none; 
+            color: #d0021b; 
+            font-size: 11px; 
+            margin-left: 10px; 
+            cursor: pointer; 
+            text-decoration: underline;
+        }
+
+        /* Aktiveerub vaid seadete alt */
+        .admin-active .delete-btn { display: inline; }
         .admin-active #adminPanel { display: block; }
     </style>
 </head>
@@ -125,18 +135,21 @@
     </div>
 
     <div id="adminPanel" class="admin-panel">
-        <h4 style="margin-top:0;">Portfelli lisamine</h4>
-        <input type="text" id="inName" placeholder="Nimi">
-        <select id="inType">
-            <option value="Fondid">Fondid</option>
-            <option value="Aktsiad">Aktsiad</option>
-        </select>
-        <input type="number" id="inQty" step="any" placeholder="Kogus">
-        <input type="number" id="inPrice" step="any" placeholder="Hind">
-        <input type="number" id="inDayChange" step="any" placeholder="Päevane muutus (€)">
-        <input type="number" id="inProfit" step="any" placeholder="Kogukasum (€)">
-        <button class="add-btn" onclick="addItem()">Lisa portfelli</button>
-        <button onclick="toggleAdmin()" style="background:#666; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer;">Sule haldus</button>
+        <h4 style="margin-top:0;">Portfelli muudatused</h4>
+        <div style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+            <strong>Lisa uus:</strong><br>
+            <input type="text" id="inName" placeholder="Nimi">
+            <select id="inType">
+                <option value="Fondid">Fondid</option>
+                <option value="Aktsiad">Aktsiad</option>
+            </select>
+            <input type="number" id="inQty" step="any" placeholder="Kogus">
+            <input type="number" id="inPrice" step="any" placeholder="Hind">
+            <input type="number" id="inDayChange" step="any" placeholder="Päevane muutus (€)">
+            <input type="number" id="inProfit" step="any" placeholder="Kogukasum (€)">
+            <button class="add-btn" onclick="addItem()">Lisa</button>
+        </div>
+        <button onclick="toggleAdmin()" style="background:#666; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer;">Peida seaded</button>
     </div>
 </div>
 
@@ -164,10 +177,14 @@
         let groups = { Fondid: [], Aktsiad: [] };
         let grandTotalV = 0, grandTotalP = 0;
 
-        assets.forEach((item, index) => groups[item.type].push({...item, id: index}));
+        // Kaardistame reaalsed indeksid kustutamiseks
+        assets.forEach((item, index) => {
+            if (!groups[item.type]) groups[item.type] = [];
+            groups[item.type].push({...item, realIndex: index});
+        });
 
         ['Fondid', 'Aktsiad'].forEach(type => {
-            if (groups[type].length === 0) return;
+            if (!groups[type] || groups[type].length === 0) return;
             detailBody.innerHTML += `<tr><td colspan="6" class="category-header">${type}</td></tr>`;
             let gV = 0, gP = 0;
 
@@ -180,7 +197,10 @@
 
                 detailBody.innerHTML += `
                     <tr>
-                        <td><span class="link">${item.name}</span></td>
+                        <td>
+                            <span class="link">${item.name}</span>
+                            <span class="delete-btn" onclick="deleteItem(${item.realIndex})">Kustuta</span>
+                        </td>
                         <td class="val-right">${item.qty.toFixed(4)}</td>
                         <td class="val-right">${item.price.toFixed(4)} EUR</td>
                         <td class="val-right ${item.dayChange < 0 ? 'negative' : 'positive'}">${item.dayChange.toFixed(2)} EUR / ${dPct}%</td>
@@ -213,10 +233,17 @@
         if (name && qty && price) { assets.push({ name, type, qty, price, dayChange, profit }); render(); }
     }
 
+    function deleteItem(index) {
+        if(confirm('Kas oled kindel, et soovid selle rea kustutada?')) {
+            assets.splice(index, 1);
+            render();
+        }
+    }
+
     function updateChart(total, groups) {
         const ctx = document.getElementById('portfolioChart').getContext('2d');
-        const fV = groups.Fondid.reduce((s, i) => s + (i.qty * i.price), 0);
-        const aV = groups.Aktsiad.reduce((s, i) => s + (i.qty * i.price), 0);
+        const fV = (groups.Fondid || []).reduce((s, i) => s + (i.qty * i.price), 0);
+        const aV = (groups.Aktsiad || []).reduce((s, i) => s + (i.qty * i.price), 0);
         if (myChart) myChart.destroy();
         myChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Fondid', 'Aktsiad'], datasets: [{ data: [fV, aV], backgroundColor: ['#ee7023', '#00768e'], borderWidth: 0 }] }, options: { cutout: '75%', plugins: { legend: { display: false } } } });
         
