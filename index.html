@@ -17,12 +17,12 @@
         body { font-family: Arial, sans-serif; background-color: var(--bg-cream); margin: 0; padding: 20px; color: var(--text-dark); }
         .container { max-width: 1200px; margin: 0 auto; position: relative; padding-top: 30px; }
         
-        /* Seadete link TÄIESTI VASAKUL ÜLAL */
+        /* Seaded vasakul ülal */
         .settings-link { 
             position: absolute; 
             left: 0; 
             top: 0; 
-            color: #ccc; /* Tee see halliks, et oleks märkamatum */
+            color: #ccc; 
             font-size: 11px; 
             text-decoration: none; 
             cursor: pointer; 
@@ -53,15 +53,12 @@
         .flex-box { display: flex; justify-content: space-between; gap: 40px; }
         .chart-container { width: 300px; text-align: center; }
 
-        /* PEIDETUD HALDUS */
+        /* Halduspaneel on vaikimisi peidus */
         #adminPanel { display: none; background: #fff; border: 2px dashed var(--swed-orange); padding: 20px; border-radius: 8px; margin-top: 40px; }
         .admin-panel input, .admin-panel select { padding: 8px; margin: 5px; border: 1px solid #ccc; border-radius: 4px; }
         .add-btn { background: var(--swed-orange); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         
-        .delete-btn { display: none; color: #ff0000; cursor: pointer; font-size: 10px; margin-left: 10px; text-decoration: underline; }
-        
-        /* Aktiveerub klassi lisamisel JS-iga */
-        .admin-active .delete-btn { display: inline; }
+        /* Aktiveerub klassi lisamisel */
         .admin-active #adminPanel { display: block; }
     </style>
 </head>
@@ -128,8 +125,8 @@
     </div>
 
     <div id="adminPanel" class="admin-panel">
-        <h4 style="margin-top:0;">Portfelli muutmine</h4>
-        <input type="text" id="inName" placeholder="Aktsia/Fondi nimi">
+        <h4 style="margin-top:0;">Portfelli lisamine</h4>
+        <input type="text" id="inName" placeholder="Nimi">
         <select id="inType">
             <option value="Fondid">Fondid</option>
             <option value="Aktsiad">Aktsiad</option>
@@ -139,7 +136,7 @@
         <input type="number" id="inDayChange" step="any" placeholder="Päevane muutus (€)">
         <input type="number" id="inProfit" step="any" placeholder="Kogukasum (€)">
         <button class="add-btn" onclick="addItem()">Lisa portfelli</button>
-        <button onclick="toggleAdmin()" style="background:#666; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer;">Peida haldus</button>
+        <button onclick="toggleAdmin()" style="background:#666; color:white; border:none; padding:10px; border-radius:4px; cursor:pointer;">Sule haldus</button>
     </div>
 </div>
 
@@ -183,7 +180,7 @@
 
                 detailBody.innerHTML += `
                     <tr>
-                        <td><span class="link">${item.name}</span> <span class="delete-btn" onclick="deleteItem(${item.id})">[X]</span></td>
+                        <td><span class="link">${item.name}</span></td>
                         <td class="val-right">${item.qty.toFixed(4)}</td>
                         <td class="val-right">${item.price.toFixed(4)} EUR</td>
                         <td class="val-right ${item.dayChange < 0 ? 'negative' : 'positive'}">${item.dayChange.toFixed(2)} EUR / ${dPct}%</td>
@@ -215,8 +212,6 @@
         const profit = parseFloat(document.getElementById('inProfit').value) || 0;
         if (name && qty && price) { assets.push({ name, type, qty, price, dayChange, profit }); render(); }
     }
-
-    function deleteItem(index) { assets.splice(index, 1); render(); }
 
     function updateChart(total, groups) {
         const ctx = document.getElementById('portfolioChart').getContext('2d');
