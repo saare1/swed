@@ -12,107 +12,65 @@
             --bg-cream: #fbf8f1;
             --text-dark: #333;
             --link-blue: #00768e;
-            --header-bg: #ffffff;
         }
 
-        body { font-family: Arial, sans-serif; background-color: var(--bg-cream); margin: 0; padding: 0; color: var(--text-dark); }
+        body { font-family: Arial, sans-serif; background-color: var(--bg-cream); margin: 0; padding: 10px; color: var(--text-dark); line-height: 1.4; }
         
-        /* Ülemine päis (Header) */
-        .swed-header { background: var(--header-bg); border-bottom: 1px solid #ddd; padding: 10px 0; width: 100%; }
-        .header-content { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: relative; }
-        .logo-section { display: flex; align-items: center; gap: 20px; }
-        .logo { height: 40px; }
-        .nav-main { display: flex; gap: 20px; font-size: 14px; font-weight: bold; border-bottom: 3px solid transparent; }
-        .nav-item { padding: 10px 0; cursor: pointer; color: #555; text-decoration: none; }
-        .nav-item.active { color: #000; border-bottom: 3px solid var(--swed-orange); }
-        .user-section { display: flex; align-items: center; gap: 15px; font-size: 13px; }
-
-        /* Sisu konteiner */
-        .container { max-width: 1200px; margin: 20px auto; position: relative; padding: 0 20px; }
-        
-        /* Seadete link vasakul ülal */
+        /* Seadete link on peidetud vasakule üles */
         .settings-link { 
-            position: absolute; 
-            left: 20px; 
-            top: -25px; 
+            display: inline-block;
             color: #ccc; 
-            font-size: 11px; 
-            text-decoration: none; 
+            font-size: 12px; 
+            margin-bottom: 10px;
             cursor: pointer; 
+            padding: 5px;
         }
-        .settings-link:hover { color: var(--link-blue); }
 
-        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        h1 { color: var(--swed-orange); font-size: 32px; margin: 10px 0 20px 0; }
-        h3 { color: var(--swed-orange); margin-top: 0; }
+        .card { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        h1 { color: var(--swed-orange); font-size: 24px; margin: 10px 0; }
+        h3 { color: var(--swed-orange); font-size: 18px; margin-top: 0; }
 
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab { padding: 10px 20px; border-radius: 20px; background: #eee; font-size: 14px; color: #555; cursor: pointer; }
-        .tab.active { background: var(--swed-yellow); color: black; font-weight: bold; }
+        /* Mobiili vahekaardid - lubab kerida kui on palju */
+        .tabs { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; -webkit-overflow-scrolling: touch; }
+        .tab { padding: 8px 15px; border-radius: 20px; background: #eee; font-size: 13px; white-space: nowrap; }
+        .tab.active { background: var(--swed-yellow); font-weight: bold; }
 
-        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-        th { text-align: left; font-size: 13px; border-bottom: 2px solid var(--swed-orange); padding: 10px; color: #000; }
-        td { padding: 12px 10px; border-bottom: 1px solid #eee; font-size: 14px; }
-        
-        .category-header { background-color: #f9f2f0; font-weight: bold; font-size: 15px; padding: 10px; }
-        .subtotal-row { font-weight: bold; border-top: 1px solid #ccc; }
+        /* Tabeli konteiner mobiilile */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; } /* Min-width tagab, et andmed ei kisu kokku */
+        th { text-align: left; font-size: 12px; border-bottom: 2px solid var(--swed-orange); padding: 8px; }
+        td { padding: 10px 8px; border-bottom: 1px solid #eee; font-size: 13px; }
         
         .val-right { text-align: right; }
         .positive { color: #588e00; font-weight: bold; }
         .negative { color: #d0021b; font-weight: bold; }
-        .link { color: var(--link-blue); text-decoration: none; font-weight: bold; cursor: pointer; }
 
-        .flex-box { display: flex; justify-content: space-between; gap: 40px; }
-        .chart-container { width: 300px; text-align: center; }
+        /* Graafiku ja ülevaate paigutus */
+        .flex-box { display: flex; flex-direction: column; gap: 20px; }
+        @media (min-width: 768px) {
+            .flex-box { flex-direction: row; justify-content: space-between; }
+            .chart-container { width: 300px; }
+            body { padding: 20px; }
+            h1 { font-size: 32px; }
+        }
 
-        /* Halduspaneel */
-        #adminPanel { display: none; background: #fff; border: 2px dashed var(--swed-orange); padding: 20px; border-radius: 8px; margin-top: 40px; }
-        .admin-panel input, .admin-panel select { padding: 8px; margin: 5px; border: 1px solid #ccc; border-radius: 4px; }
-        .add-btn { background: var(--swed-orange); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .chart-container { width: 100%; max-width: 250px; margin: 0 auto; }
+
+        /* Haldusvaade */
+        #adminPanel { display: none; background: #fff; border: 2px dashed var(--swed-orange); padding: 15px; border-radius: 8px; margin-top: 20px; }
+        .admin-panel input, .admin-panel select { width: calc(100% - 20px); padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .add-btn { width: 100%; background: var(--swed-orange); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         
-        .delete-btn { display: none; color: #d0021b; font-size: 11px; margin-left: 10px; cursor: pointer; text-decoration: underline; }
+        .delete-btn { display: none; color: #d0021b; font-size: 11px; margin-left: 5px; text-decoration: underline; }
         .admin-active .delete-btn { display: inline; }
         .admin-active #adminPanel { display: block; }
     </style>
 </head>
 <body>
 
-<div class="swed-header">
-    <div class="header-content">
-        <div class="logo-section">
-            <img src="https://www.swedbank.ee/static/stylebook/swedbank_logo.png" alt="Swedbank" class="logo">
-            <div class="nav-main">
-                <span class="nav-item">Eraklient</span>
-                <span class="nav-item">Äriklient</span>
-            </div>
-        </div>
-        <div class="user-section">
-            <span>👤 Orm Saaresalu</span>
-            <span>📞 Kontaktid</span>
-            <span style="background: var(--swed-yellow); padding: 2px 6px; border-radius: 50%; font-weight: bold;">3</span>
-            <span>Teavitused</span>
-            <span>Väljun ➡</span>
-        </div>
-    </div>
-</div>
-
-<div class="swed-header" style="padding: 0; background: #fff;">
-    <div class="header-content">
-        <div class="nav-main">
-            <span class="nav-item">Igapäevapangandus</span>
-            <span class="nav-item">Kaardid</span>
-            <span class="nav-item">Kindlustus</span>
-            <span class="nav-item">Laen, liising</span>
-            <span class="nav-item active">Kogumine, investeerimine</span>
-            <span class="nav-item">Pension</span>
-        </div>
-    </div>
-</div>
-
 <div class="container" id="mainContainer">
-    <div class="settings-link" onclick="toggleAdmin()">⚙️ Halda vaadet</div>
+    <div class="settings-link" onclick="toggleAdmin()">⚙️ Seaded</div>
     
-    <div class="breadcrumb" style="font-size: 12px; color: #666; margin: 15px 0;">Avaleht > Kogumine, investeerimine > <strong>Minu portfell</strong></div>
     <h1>Minu portfell</h1>
 
     <div class="card">
@@ -121,110 +79,113 @@
             <div class="tab">Arvelduskontod</div>
             <div class="tab">Pension</div>
             <div class="tab">Hoiused</div>
-            <div class="tab">Kogumine elukindlustusega</div>
         </div>
 
         <div class="flex-box">
             <div style="flex: 1;">
-                <h3>Portfelli ülevaade</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Vara liik</th>
-                            <th class="val-right">Kasum</th>
-                            <th class="val-right">Väärtus (EUR)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="overviewBody"></tbody>
-                    <tfoot>
-                        <tr style="font-weight: bold; background: #fafafa;">
-                            <td>Portfell kokku</td>
-                            <td class="val-right positive" id="topTotalProfit">0.00 EUR / 0.00%</td>
-                            <td class="val-right" id="topTotalValue">0.00</td>
-                        </tr>
-                    </tfoot>
-                </table>
+                <h3>Ülevaade</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>Liik</th><th class="val-right">Kasum</th><th class="val-right">Väärtus</th></tr>
+                        </thead>
+                        <tbody id="overviewBody"></tbody>
+                    </table>
+                </div>
             </div>
             <div class="chart-container">
                 <canvas id="portfolioChart"></canvas>
-                <div id="chartLegend" style="margin-top: 15px; font-size: 13px;"></div>
             </div>
         </div>
     </div>
 
     <div class="card">
-        <h3>Investeerimine: <span class="link" style="color: var(--swed-orange); border-bottom: 1px solid var(--swed-orange); font-weight: normal;">Minu investeering</span> ✏️</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 30%;">Väärtpaber</th>
-                    <th class="val-right">Saldo / positsioon</th>
-                    <th class="val-right">Hind</th>
-                    <th class="val-right">Päevane muutus</th>
-                    <th class="val-right">Kasum</th>
-                    <th class="val-right">Väärtus</th>
-                </tr>
-            </thead>
-            <tbody id="detailBody"></tbody>
-        </table>
+        <h3>Investeeringud</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Väärtpaber</th>
+                        <th class="val-right">Kogus</th>
+                        <th class="val-right">Hind</th>
+                        <th class="val-right">Kasum</th>
+                        <th class="val-right">Väärtus</th>
+                    </tr>
+                </thead>
+                <tbody id="detailBody"></tbody>
+            </table>
+        </div>
     </div>
 
     <div id="adminPanel" class="admin-panel">
-        <h4 style="margin-top:0;">Portfelli muudatused</h4>
-        <input type="text" id="inName" placeholder="Nimi">
-        <select id="inType"><option value="Fondid">Fondid</option><option value="Aktsiad">Aktsiad</option></select>
+        <h4 style="margin:0 0 10px 0;">Lisa uus rida</h4>
+        <input type="text" id="inName" placeholder="Väärtpaberi nimi">
+        <select id="inType">
+            <option value="Fondid">Fondid</option>
+            <option value="Aktsiad">Aktsiad</option>
+        </select>
         <input type="number" id="inQty" step="any" placeholder="Kogus">
-        <input type="number" id="inPrice" step="any" placeholder="Hind">
-        <input type="number" id="inDayChange" step="any" placeholder="Päevane muutus (€)">
+        <input type="number" id="inPrice" step="any" placeholder="Ühiku hind">
         <input type="number" id="inProfit" step="any" placeholder="Kogukasum (€)">
-        <button class="add-btn" onclick="addItem()">Lisa</button>
-        <button onclick="toggleAdmin()" style="margin-left:10px;">Peida seaded</button>
+        <button class="add-btn" onclick="addItem()">Lisa portfelli</button>
     </div>
 </div>
 
 <script>
-    let assets = JSON.parse(localStorage.getItem('swed_v3')) || [
-        { name: 'SWEDBANK ROBUR ACCESS EDGE GLOBAL C', type: 'Fondid', qty: 1.4609, price: 16.7561, dayChange: -0.13, profit: 4.48 }
+    // Algandmed (põhinevad sinu piltidel)
+    let assets = JSON.parse(localStorage.getItem('swed_mobile_v1')) || [
+        { name: 'SWEDBANK ROBUR ACCESS EDGE GLOBAL C', type: 'Fondid', qty: 1.4609, price: 16.7561, profit: 4.48 }
     ];
 
     let myChart = null;
-    function toggleAdmin() { document.getElementById('mainContainer').classList.toggle('admin-active'); }
-    document.addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'h') toggleAdmin(); });
+
+    function toggleAdmin() {
+        document.getElementById('mainContainer').classList.toggle('admin-active');
+    }
 
     function render() {
         const detailBody = document.getElementById('detailBody');
         const overviewBody = document.getElementById('overviewBody');
-        detailBody.innerHTML = ''; overviewBody.innerHTML = '';
-        let groups = { Fondid: [], Aktsiad: [] }, grandTotalV = 0, grandTotalP = 0;
+        detailBody.innerHTML = '';
+        overviewBody.innerHTML = '';
+
+        let groups = { Fondid: [], Aktsiad: [] };
+        let grandTotalV = 0, grandTotalP = 0;
 
         assets.forEach((item, index) => {
             if (!groups[item.type]) groups[item.type] = [];
             groups[item.type].push({...item, realIndex: index});
         });
 
-        ['Fondid', 'Aktsiad'].forEach(type => {
-            if (!groups[type] || groups[type].length === 0) return;
-            detailBody.innerHTML += `<tr><td colspan="6" class="category-header">${type}</td></tr>`;
+        Object.keys(groups).forEach(type => {
+            if (groups[type].length === 0) return;
+            
+            detailBody.innerHTML += `<tr style="background:#f9f2f0; font-weight:bold;"><td colspan="5">${type}</td></tr>`;
             let gV = 0, gP = 0;
+
             groups[type].forEach(item => {
                 const val = item.qty * item.price;
-                const cost = val - item.profit;
-                const pPct = cost > 0 ? (item.profit / cost * 100).toFixed(2) : "0.00";
-                const dPct = val > 0 ? (item.dayChange / val * 100).toFixed(2) : "0.00";
                 gV += val; gP += item.profit;
-                detailBody.innerHTML += `<tr><td><span class="link">${item.name}</span><span class="delete-btn" onclick="deleteItem(${item.realIndex})">Kustuta</span></td><td class="val-right">${item.qty.toFixed(4)}</td><td class="val-right">${item.price.toFixed(4)} EUR</td><td class="val-right ${item.dayChange < 0 ? 'negative' : 'positive'}">${item.dayChange.toFixed(2)} EUR / ${dPct}%</td><td class="val-right positive">${item.profit.toFixed(2)} EUR / ${pPct}%</td><td class="val-right">${val.toFixed(2)} EUR</td></tr>`;
+
+                detailBody.innerHTML += `
+                    <tr>
+                        <td>
+                            ${item.name}
+                            <span class="delete-btn" onclick="deleteItem(${item.realIndex})">Kustuta</span>
+                        </td>
+                        <td class="val-right">${item.qty.toFixed(2)}</td>
+                        <td class="val-right">${item.price.toFixed(2)}</td>
+                        <td class="val-right positive">${item.profit.toFixed(2)}</td>
+                        <td class="val-right">${val.toFixed(2)}</td>
+                    </tr>`;
             });
-            const gPPct = (gV - gP) > 0 ? (gP / (gV - gP) * 100).toFixed(2) : "0.00";
-            detailBody.innerHTML += `<tr class="subtotal-row"><td colspan="4">Investeeringud kokku</td><td class="val-right positive">${gP.toFixed(2)} EUR / ${gPPct}%</td><td class="val-right">${gV.toFixed(2)} EUR</td></tr>`;
-            overviewBody.innerHTML += `<tr><td><span class="link">${type}</span></td><td class="val-right positive">${gP.toFixed(2)} EUR / ${gPPct}%</td><td class="val-right">${gV.toFixed(2)}</td></tr>`;
+
+            overviewBody.innerHTML += `<tr><td>${type}</td><td class="val-right positive">${gP.toFixed(2)}</td><td class="val-right">${gV.toFixed(2)}</td></tr>`;
             grandTotalV += gV; grandTotalP += gP;
         });
 
-        const gtPPct = (grandTotalV - grandTotalP) > 0 ? (grandTotalP / (grandTotalV - grandTotalP) * 100).toFixed(2) : "0.00";
-        document.getElementById('topTotalValue').innerText = grandTotalV.toFixed(2);
-        document.getElementById('topTotalProfit').innerText = `${grandTotalP.toFixed(2)} EUR / ${gtPPct}%`;
-        updateChart(grandTotalV, groups);
-        localStorage.setItem('swed_v3', JSON.stringify(assets));
+        updateChart(groups);
+        localStorage.setItem('swed_mobile_v1', JSON.stringify(assets));
     }
 
     function addItem() {
@@ -232,21 +193,43 @@
         const type = document.getElementById('inType').value;
         const qty = parseFloat(document.getElementById('inQty').value);
         const price = parseFloat(document.getElementById('inPrice').value);
-        if (name && qty && price) { 
-            assets.push({ name, type, qty, price, dayChange: parseFloat(document.getElementById('inDayChange').value) || 0, profit: parseFloat(document.getElementById('inProfit').value) || 0 }); 
-            render(); 
+        const profit = parseFloat(document.getElementById('inProfit').value) || 0;
+
+        if (name && qty && price) {
+            assets.push({ name, type, qty, price, profit });
+            render();
+            // Puhasta vorm
+            document.getElementById('inName').value = '';
+            document.getElementById('inQty').value = '';
+            document.getElementById('inPrice').value = '';
         }
     }
 
-    function deleteItem(index) { if(confirm('Kustutada rida?')) { assets.splice(index, 1); render(); } }
+    function deleteItem(index) {
+        if(confirm('Kustutada see rida?')) {
+            assets.splice(index, 1);
+            render();
+        }
+    }
 
-    function updateChart(total, groups) {
+    function updateChart(groups) {
         const ctx = document.getElementById('portfolioChart').getContext('2d');
-        const fV = (groups.Fondid || []).reduce((s, i) => s + (i.qty * i.price), 0);
-        const aV = (groups.Aktsiad || []).reduce((s, i) => s + (i.qty * i.price), 0);
+        const fV = groups.Fondid.reduce((s, i) => s + (i.qty * i.price), 0);
+        const aV = groups.Aktsiad.reduce((s, i) => s + (i.qty * i.price), 0);
+
         if (myChart) myChart.destroy();
-        myChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Fondid', 'Aktsiad'], datasets: [{ data: [fV, aV], backgroundColor: ['#ee7023', '#00768e'], borderWidth: 0 }] }, options: { cutout: '75%', plugins: { legend: { display: false } } } });
-        document.getElementById('chartLegend').innerHTML = `<div><span style="color:#ee7023">●</span> Fondid ${(fV/total*100).toFixed(2)}%</div>` + (aV > 0 ? `<div><span style="color:#00768e">●</span> Aktsiad ${(aV/total*100).toFixed(2)}%</div>` : '');
+        myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Fondid', 'Aktsiad'],
+                datasets: [{
+                    data: [fV, aV],
+                    backgroundColor: ['#ee7023', '#00768e'],
+                    borderWidth: 0
+                }]
+            },
+            options: { cutout: '70%', plugins: { legend: { display: false } } }
+        });
     }
 
     render();
