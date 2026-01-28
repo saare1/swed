@@ -12,228 +12,243 @@
             --bg-cream: #fbf8f1;
             --text-dark: #333;
             --link-blue: #00768e;
-            --footer-text: #666;
+            --header-bg: #ffffff;
         }
 
         body { font-family: Arial, sans-serif; background-color: var(--bg-cream); margin: 0; padding: 0; color: var(--text-dark); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; }
-
-        /* PÄIS */
-        .swed-header { background: white; border-bottom: 1px solid #ddd; padding: 10px 0; }
-        .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
-        .nav-main { display: flex; gap: 20px; font-size: 14px; font-weight: bold; }
+        
+        /* Ülemine päis (Header) */
+        .swed-header { background: var(--header-bg); border-bottom: 1px solid #ddd; padding: 10px 0; width: 100%; }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: relative; }
+        .logo-section { display: flex; align-items: center; gap: 20px; }
+        .logo { height: 40px; }
+        .nav-main { display: flex; gap: 20px; font-size: 14px; font-weight: bold; border-bottom: 3px solid transparent; }
         .nav-item { padding: 10px 0; cursor: pointer; color: #555; text-decoration: none; }
         .nav-item.active { color: #000; border-bottom: 3px solid var(--swed-orange); }
+        .user-section { display: flex; align-items: center; gap: 15px; font-size: 13px; }
 
-        /* SEADED (PEIDETUD) */
-        .settings-link { position: absolute; left: 20px; top: -5px; color: #ccc; font-size: 11px; cursor: pointer; z-index: 100; }
+        /* Sisu konteiner */
+        .container { max-width: 1200px; margin: 20px auto; position: relative; padding: 0 20px; }
         
-        /* KAARDID JA TABELID */
-        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px; }
-        h1 { color: var(--swed-orange); font-size: 32px; margin: 10px 0; }
-        h3 { color: var(--swed-orange); }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab { padding: 8px 18px; border-radius: 20px; background: #eee; font-size: 14px; cursor: pointer; }
-        .tab.active { background: var(--swed-yellow); font-weight: bold; }
+        /* Seadete link vasakul ülal */
+        .settings-link { 
+            position: absolute; 
+            left: 20px; 
+            top: -25px; 
+            color: #ccc; 
+            font-size: 11px; 
+            text-decoration: none; 
+            cursor: pointer; 
+        }
+        .settings-link:hover { color: var(--link-blue); }
 
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; font-size: 13px; border-bottom: 2px solid var(--swed-orange); padding: 10px; }
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h1 { color: var(--swed-orange); font-size: 32px; margin: 10px 0 20px 0; }
+        h3 { color: var(--swed-orange); margin-top: 0; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; border-radius: 20px; background: #eee; font-size: 14px; color: #555; cursor: pointer; }
+        .tab.active { background: var(--swed-yellow); color: black; font-weight: bold; }
+
+        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        th { text-align: left; font-size: 13px; border-bottom: 2px solid var(--swed-orange); padding: 10px; color: #000; }
         td { padding: 12px 10px; border-bottom: 1px solid #eee; font-size: 14px; }
+        
+        .category-header { background-color: #f9f2f0; font-weight: bold; font-size: 15px; padding: 10px; }
+        .subtotal-row { font-weight: bold; border-top: 1px solid #ccc; }
+        
         .val-right { text-align: right; }
         .positive { color: #588e00; font-weight: bold; }
         .negative { color: #d0021b; font-weight: bold; }
-        .link { color: var(--link-blue); font-weight: bold; cursor: pointer; text-decoration: none; }
+        .link { color: var(--link-blue); text-decoration: none; font-weight: bold; cursor: pointer; }
 
-        /* LISASEKTSIOONID */
-        .info-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 40px; }
-        .useful-box { background: #eef7f9; padding: 20px; border-radius: 8px; border-top: 4px solid var(--link-blue); }
-        .trade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #fff; padding: 20px; border-radius: 12px; }
+        .flex-box { display: flex; justify-content: space-between; gap: 40px; }
+        .chart-container { width: 300px; text-align: center; }
 
-        /* JALUS */
-        .swed-footer { background: white; padding: 60px 0 40px; border-top: 1px solid #eee; margin-top: 50px; }
-        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; padding: 0 20px; }
-        .footer-col h4 { color: #333; margin-bottom: 20px; }
-        .footer-col ul { list-style: none; padding: 0; }
-        .footer-col li { margin-bottom: 10px; color: var(--footer-text); font-size: 14px; cursor: pointer; }
-        .footer-bottom { max-width: 1200px; margin: 40px auto 0; padding: 20px; border-top: 1px solid #eee; font-size: 12px; color: #999; }
-
-        /* HALDUS */
-        #adminPanel { display: none; background: #fff3e0; border: 2px dashed var(--swed-orange); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        .admin-active #adminPanel { display: block; }
-        .delete-btn { display: none; color: red; font-size: 10px; margin-left: 8px; cursor: pointer; }
+        /* Halduspaneel */
+        #adminPanel { display: none; background: #fff; border: 2px dashed var(--swed-orange); padding: 20px; border-radius: 8px; margin-top: 40px; }
+        .admin-panel input, .admin-panel select { padding: 8px; margin: 5px; border: 1px solid #ccc; border-radius: 4px; }
+        .add-btn { background: var(--swed-orange); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        
+        .delete-btn { display: none; color: #d0021b; font-size: 11px; margin-left: 10px; cursor: pointer; text-decoration: underline; }
         .admin-active .delete-btn { display: inline; }
+        .admin-active #adminPanel { display: block; }
     </style>
 </head>
 <body>
 
 <div class="swed-header">
-    <div class="header-inner">
-        <img src="https://www.swedbank.ee/static/stylebook/swedbank_logo.png" alt="Logo" style="height:40px;">
+    <div class="header-content">
+        <div class="logo-section">
+            <img src="https://www.swedbank.ee/static/stylebook/swedbank_logo.png" alt="Swedbank" class="logo">
+            <div class="nav-main">
+                <span class="nav-item">Eraklient</span>
+                <span class="nav-item">Äriklient</span>
+            </div>
+        </div>
+        <div class="user-section">
+            <span>👤 Orm Saaresalu</span>
+            <span>📞 Kontaktid</span>
+            <span style="background: var(--swed-yellow); padding: 2px 6px; border-radius: 50%; font-weight: bold;">3</span>
+            <span>Teavitused</span>
+            <span>Väljun ➡</span>
+        </div>
+    </div>
+</div>
+
+<div class="swed-header" style="padding: 0; background: #fff;">
+    <div class="header-content">
         <div class="nav-main">
             <span class="nav-item">Igapäevapangandus</span>
             <span class="nav-item">Kaardid</span>
+            <span class="nav-item">Kindlustus</span>
+            <span class="nav-item">Laen, liising</span>
             <span class="nav-item active">Kogumine, investeerimine</span>
             <span class="nav-item">Pension</span>
         </div>
-        <div style="font-size:13px;">👤 Orm Saaresalu | Väljun ➡</div>
     </div>
 </div>
 
 <div class="container" id="mainContainer">
-    <div class="settings-link" onclick="toggleAdmin()">⚙️ Seaded</div>
+    <div class="settings-link" onclick="toggleAdmin()">⚙️ Halda vaadet</div>
     
     <div class="breadcrumb" style="font-size: 12px; color: #666; margin: 15px 0;">Avaleht > Kogumine, investeerimine > <strong>Minu portfell</strong></div>
     <h1>Minu portfell</h1>
-
-    <div id="adminPanel">
-        <h4>Halda portfelli</h4>
-        <input type="text" id="inName" placeholder="Nimi">
-        <select id="inType"><option value="Fondid">Fondid</option><option value="Aktsiad">Aktsiad</option></select>
-        <input type="number" id="inQty" placeholder="Kogus">
-        <input type="number" id="inPrice" placeholder="Hind">
-        <button onclick="addItem()" style="background:var(--swed-orange); color:white; border:none; padding:8px 15px; border-radius:4px;">Lisa rida</button>
-        <button onclick="toggleAdmin()" style="margin-left:10px;">Sulge seaded</button>
-    </div>
 
     <div class="card">
         <div class="tabs">
             <div class="tab active">Investeeringud</div>
             <div class="tab">Arvelduskontod</div>
             <div class="tab">Pension</div>
+            <div class="tab">Hoiused</div>
+            <div class="tab">Kogumine elukindlustusega</div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; gap: 40px;">
+        <div class="flex-box">
             <div style="flex: 1;">
                 <h3>Portfelli ülevaade</h3>
                 <table>
                     <thead>
-                        <tr><th>Vara liik</th><th class="val-right">Kasum</th><th class="val-right">Väärtus (EUR)</th></tr>
+                        <tr>
+                            <th>Vara liik</th>
+                            <th class="val-right">Kasum</th>
+                            <th class="val-right">Väärtus (EUR)</th>
+                        </tr>
                     </thead>
                     <tbody id="overviewBody"></tbody>
+                    <tfoot>
+                        <tr style="font-weight: bold; background: #fafafa;">
+                            <td>Portfell kokku</td>
+                            <td class="val-right positive" id="topTotalProfit">0.00 EUR / 0.00%</td>
+                            <td class="val-right" id="topTotalValue">0.00</td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
-            <div style="width: 250px;"><canvas id="portfolioChart"></canvas></div>
+            <div class="chart-container">
+                <canvas id="portfolioChart"></canvas>
+                <div id="chartLegend" style="margin-top: 15px; font-size: 13px;"></div>
+            </div>
         </div>
     </div>
 
     <div class="card">
-        <h3>Investeerimine: <span class="link" style="color:var(--swed-orange)">Minu investeering</span> ✏️</h3>
+        <h3>Investeerimine: <span class="link" style="color: var(--swed-orange); border-bottom: 1px solid var(--swed-orange); font-weight: normal;">Minu investeering</span> ✏️</h3>
         <table>
             <thead>
-                <tr><th>Väärtpaber</th><th class="val-right">Saldo</th><th class="val-right">Hind</th><th class="val-right">Kasum</th><th class="val-right">Väärtus</th></tr>
+                <tr>
+                    <th style="width: 30%;">Väärtpaber</th>
+                    <th class="val-right">Saldo / positsioon</th>
+                    <th class="val-right">Hind</th>
+                    <th class="val-right">Päevane muutus</th>
+                    <th class="val-right">Kasum</th>
+                    <th class="val-right">Väärtus</th>
+                </tr>
             </thead>
             <tbody id="detailBody"></tbody>
         </table>
     </div>
 
-    <div class="info-grid">
-        <div>
-            <h3>Hea teada!</h3>
-            <div style="background:white; border-radius:8px; padding:1px 20px;">
-                <p><strong>Maksustamine</strong> ▾</p>
-                <p><strong>Lepingud ja õigusalane teave</strong> ▾</p>
-            </div>
-        </div>
-        <div class="useful-box">
-            <h4>Kasulikku</h4>
-            <ul style="list-style:none; padding:0; font-size:14px; color:var(--link-blue); line-height:2;">
-                <li>▶ Sobivusküsimustik</li>
-                <li>▶ Ava uus konto investeerimiseks</li>
-                <li>▶ Väärtpaberikonto väljavõte</li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="trade-grid">
-        <div>
-            <h4 style="color:var(--swed-orange)">Enim kaubeldud: Fondid</h4>
-            <ul style="font-size:13px; line-height:1.8;">
-                <li>✅ Swedbank Robur Technology</li>
-                <li>✅ Swedbank Robur Access Edge Global</li>
-            </ul>
-        </div>
-        <div>
-            <h4 style="color:var(--swed-orange)">Enim kaubeldud: Aktsiad</h4>
-            <ul style="font-size:13px; line-height:1.8;">
-                <li>✅ Tesla</li>
-                <li>✅ Nvidia</li>
-                <li>✅ Ignitis</li>
-            </ul>
-        </div>
+    <div id="adminPanel" class="admin-panel">
+        <h4 style="margin-top:0;">Portfelli muudatused</h4>
+        <input type="text" id="inName" placeholder="Nimi">
+        <select id="inType"><option value="Fondid">Fondid</option><option value="Aktsiad">Aktsiad</option></select>
+        <input type="number" id="inQty" step="any" placeholder="Kogus">
+        <input type="number" id="inPrice" step="any" placeholder="Hind">
+        <input type="number" id="inDayChange" step="any" placeholder="Päevane muutus (€)">
+        <input type="number" id="inProfit" step="any" placeholder="Kogukasum (€)">
+        <button class="add-btn" onclick="addItem()">Lisa</button>
+        <button onclick="toggleAdmin()" style="margin-left:10px;">Peida seaded</button>
     </div>
 </div>
 
-<footer class="swed-footer">
-    <div class="footer-grid">
-        <div class="footer-col">
-            <h4>Kontaktid</h4>
-            <ul><li>Kontaktid, esindused</li><li>Aja broneerimine</li><li>Swedbankist</li></ul>
-        </div>
-        <div class="footer-col">
-            <h4>Kasulikud lingid</h4>
-            <ul><li>Turvalised rahaasjad</li><li>Kalkulaatorid</li><li>Hinnad ja kursid</li></ul>
-        </div>
-        <div class="footer-col">
-            <h4>Juriidiline info</h4>
-            <ul><li>Pangatingimused</li><li>Andmete töötlemine</li><li>Kaebuste lahendamine</li></ul>
-        </div>
-        <div class="footer-col">
-            <h4>Kliendiprogrammid</h4>
-            <ul><li>Kuldklient</li><li>Privaatpangandus</li><li>Noortele ja tudengile</li></ul>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>© Swedbank AS, Liivalaia 34, 15040 Tallinn. Reg. number: 10060701. Swedbanki sotsiaalmeedia: FB | IG | YT</p>
-        <p style="font-size:10px; margin-top:10px;">Olete finantsteenuseid pakkuvate ettevõtete kodulehel. Enne lepingu sõlmimist tutvuge teenuse tingimustega.</p>
-    </div>
-</footer>
-
 <script>
-    let assets = JSON.parse(localStorage.getItem('swed_v4')) || [
-        { name: 'SWEDBANK ROBUR ACCESS EDGE GLOBAL C', type: 'Fondid', qty: 1.4609, price: 16.7561, profit: 4.48 }
+    let assets = JSON.parse(localStorage.getItem('swed_v3')) || [
+        { name: 'SWEDBANK ROBUR ACCESS EDGE GLOBAL C', type: 'Fondid', qty: 1.4609, price: 16.7561, dayChange: -0.13, profit: 4.48 }
     ];
+
     let myChart = null;
     function toggleAdmin() { document.getElementById('mainContainer').classList.toggle('admin-active'); }
-    
-    function render() {
-        const dBody = document.getElementById('detailBody');
-        const oBody = document.getElementById('overviewBody');
-        dBody.innerHTML = ''; oBody.innerHTML = '';
-        let groups = { Fondid: [], Aktsiad: [] }, totalV = 0, totalP = 0;
+    document.addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'h') toggleAdmin(); });
 
-        assets.forEach((item, i) => { 
-            groups[item.type].push({...item, idx: i}); 
-            totalV += (item.qty * item.price); totalP += item.profit;
+    function render() {
+        const detailBody = document.getElementById('detailBody');
+        const overviewBody = document.getElementById('overviewBody');
+        detailBody.innerHTML = ''; overviewBody.innerHTML = '';
+        let groups = { Fondid: [], Aktsiad: [] }, grandTotalV = 0, grandTotalP = 0;
+
+        assets.forEach((item, index) => {
+            if (!groups[item.type]) groups[item.type] = [];
+            groups[item.type].push({...item, realIndex: index});
         });
 
-        Object.keys(groups).forEach(type => {
-            if (groups[type].length === 0) return;
-            dBody.innerHTML += `<tr style="background:#f9f2f0; font-weight:bold;"><td colspan="5">${type}</td></tr>`;
+        ['Fondid', 'Aktsiad'].forEach(type => {
+            if (!groups[type] || groups[type].length === 0) return;
+            detailBody.innerHTML += `<tr><td colspan="6" class="category-header">${type}</td></tr>`;
             let gV = 0, gP = 0;
             groups[type].forEach(item => {
-                let v = item.qty * item.price; gV += v; gP += item.profit;
-                dBody.innerHTML += `<tr><td>${item.name} <span class="delete-btn" onclick="del(${item.idx})">[Kustuta]</span></td><td class="val-right">${item.qty}</td><td class="val-right">${item.price} EUR</td><td class="val-right positive">${item.profit} EUR</td><td class="val-right">${v.toFixed(2)} EUR</td></tr>`;
+                const val = item.qty * item.price;
+                const cost = val - item.profit;
+                const pPct = cost > 0 ? (item.profit / cost * 100).toFixed(2) : "0.00";
+                const dPct = val > 0 ? (item.dayChange / val * 100).toFixed(2) : "0.00";
+                gV += val; gP += item.profit;
+                detailBody.innerHTML += `<tr><td><span class="link">${item.name}</span><span class="delete-btn" onclick="deleteItem(${item.realIndex})">Kustuta</span></td><td class="val-right">${item.qty.toFixed(4)}</td><td class="val-right">${item.price.toFixed(4)} EUR</td><td class="val-right ${item.dayChange < 0 ? 'negative' : 'positive'}">${item.dayChange.toFixed(2)} EUR / ${dPct}%</td><td class="val-right positive">${item.profit.toFixed(2)} EUR / ${pPct}%</td><td class="val-right">${val.toFixed(2)} EUR</td></tr>`;
             });
-            oBody.innerHTML += `<tr><td>${type}</td><td class="val-right positive">${gP.toFixed(2)} EUR</td><td class="val-right">${gV.toFixed(2)}</td></tr>`;
+            const gPPct = (gV - gP) > 0 ? (gP / (gV - gP) * 100).toFixed(2) : "0.00";
+            detailBody.innerHTML += `<tr class="subtotal-row"><td colspan="4">Investeeringud kokku</td><td class="val-right positive">${gP.toFixed(2)} EUR / ${gPPct}%</td><td class="val-right">${gV.toFixed(2)} EUR</td></tr>`;
+            overviewBody.innerHTML += `<tr><td><span class="link">${type}</span></td><td class="val-right positive">${gP.toFixed(2)} EUR / ${gPPct}%</td><td class="val-right">${gV.toFixed(2)}</td></tr>`;
+            grandTotalV += gV; grandTotalP += gP;
         });
-        
-        updateChart(groups);
-        localStorage.setItem('swed_v4', JSON.stringify(assets));
+
+        const gtPPct = (grandTotalV - grandTotalP) > 0 ? (grandTotalP / (grandTotalV - grandTotalP) * 100).toFixed(2) : "0.00";
+        document.getElementById('topTotalValue').innerText = grandTotalV.toFixed(2);
+        document.getElementById('topTotalProfit').innerText = `${grandTotalP.toFixed(2)} EUR / ${gtPPct}%`;
+        updateChart(grandTotalV, groups);
+        localStorage.setItem('swed_v3', JSON.stringify(assets));
     }
 
     function addItem() {
-        assets.push({ name: document.getElementById('inName').value.toUpperCase(), type: document.getElementById('inType').value, qty: parseFloat(document.getElementById('inQty').value), price: parseFloat(document.getElementById('inPrice').value), profit: 0 });
-        render();
+        const name = document.getElementById('inName').value.toUpperCase();
+        const type = document.getElementById('inType').value;
+        const qty = parseFloat(document.getElementById('inQty').value);
+        const price = parseFloat(document.getElementById('inPrice').value);
+        if (name && qty && price) { 
+            assets.push({ name, type, qty, price, dayChange: parseFloat(document.getElementById('inDayChange').value) || 0, profit: parseFloat(document.getElementById('inProfit').value) || 0 }); 
+            render(); 
+        }
     }
-    function del(i) { if(confirm('Kustutada?')) { assets.splice(i, 1); render(); } }
 
-    function updateChart(g) {
+    function deleteItem(index) { if(confirm('Kustutada rida?')) { assets.splice(index, 1); render(); } }
+
+    function updateChart(total, groups) {
         const ctx = document.getElementById('portfolioChart').getContext('2d');
-        const fV = g.Fondid.reduce((s, i) => s + (i.qty * i.price), 0);
-        const aV = g.Aktsiad.reduce((s, i) => s + (i.qty * i.price), 0);
+        const fV = (groups.Fondid || []).reduce((s, i) => s + (i.qty * i.price), 0);
+        const aV = (groups.Aktsiad || []).reduce((s, i) => s + (i.qty * i.price), 0);
         if (myChart) myChart.destroy();
-        myChart = new Chart(ctx, { type: 'doughnut', data: { datasets: [{ data: [fV, aV], backgroundColor: ['#ee7023', '#00768e'] }] }, options: { cutout: '70%' } });
+        myChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Fondid', 'Aktsiad'], datasets: [{ data: [fV, aV], backgroundColor: ['#ee7023', '#00768e'], borderWidth: 0 }] }, options: { cutout: '75%', plugins: { legend: { display: false } } } });
+        document.getElementById('chartLegend').innerHTML = `<div><span style="color:#ee7023">●</span> Fondid ${(fV/total*100).toFixed(2)}%</div>` + (aV > 0 ? `<div><span style="color:#00768e">●</span> Aktsiad ${(aV/total*100).toFixed(2)}%</div>` : '');
     }
+
     render();
 </script>
 </body>
